@@ -1,7 +1,4 @@
 program {
-	println!(1);	
-	let anuma = 8;
-	println!(anuma);
-	let anuma = 9;
-	println!(anuma);
+	let y = 7;
+	OPERA(+,15,5);
 }

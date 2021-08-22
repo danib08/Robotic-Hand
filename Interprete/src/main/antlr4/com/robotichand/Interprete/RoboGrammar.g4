@@ -11,13 +11,23 @@ grammar RoboGrammar;
 
 program: PROGRAM OPEN_BRAC sentence* CLOSE_BRAC;
 
-sentence: println | var_assign;
+sentence: primitive_function | var_assign;
 
 var_assign: LET ID ASSIGN expression SEMICOLON
 		{symbolTable.put($ID.text, $expression.value);};
+		
+primitive_function: opera | println;
 
 println: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
 		{System.out.println($expression.value);};
+
+opera: OPERA OPEN_PAR operator COMMA o1=operando COMMA o2=operando CLOSE_PAR SEMICOLON
+		{
+			if (($operator.text).equals("+")) {
+				int result = Integer.parseInt($o1.text) + Integer.parseInt($o2.text);
+				System.out.println(result);
+			}
+		};
 
 expression returns [Object value]: 
 		NUMBER {$value = Integer.parseInt($NUMBER.text);}
@@ -26,14 +36,19 @@ expression returns [Object value]:
 
 constant returns [Object value]: 
 		NUMBER {$value = Integer.parseInt($NUMBER.text);};
+		
+operator: SUM | MINUS | MULT | DIV | EXP;
+
+operando: NUMBER | ID | OPERA;
 
 PROGRAM: 'program';
+PRINTLN: 'println!';
 LET: 'let';
 OPERA: 'OPERA';
-PRINTLN: 'println!';
 
 ASSIGN: '=';
 SEMICOLON: ';';
+COMMA: ',';
 
 SUM: '+';
 MINUS: '-';
