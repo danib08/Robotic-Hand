@@ -1,8 +1,20 @@
 grammar RoboGrammar;
 
+@parser::header {
+	import java.util.Map;
+	import java.util.HashMap;
+}
+
+@parser::members {
+	Map<String, Object> symbolTable = new HashMap<String, Object>();
+}
+
 program: PROGRAM OPEN_BRAC sentence* CLOSE_BRAC;
 
-sentence: println;
+sentence: println | var_assign;
+
+var_assign: LET ID ASSIGN expression SEMICOLON
+		{symbolTable.put($ID.text, $expression.value);};
 
 println: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
 		{System.out.println($expression.value);};
@@ -10,10 +22,14 @@ println: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
 expression returns [Object value]: 
 		NUMBER {$value = Integer.parseInt($NUMBER.text);}
 		| 
-		ID {$value = $ID.text;};
+		ID {$value = symbolTable.get($ID.text);};
+
+constant returns [Object value]: 
+		NUMBER {$value = Integer.parseInt($NUMBER.text);};
 
 PROGRAM: 'program';
 LET: 'let';
+OPERA: 'OPERA';
 PRINTLN: 'println!';
 
 ASSIGN: '=';

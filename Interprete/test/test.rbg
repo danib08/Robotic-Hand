@@ -1,4 +1,7 @@
 program {
-	println!(a);
-	println!(hola9);
+	println!(1);	
+	let anuma = 8;
+	println!(anuma);
+	let anuma = 9;
+	println!(anuma);
 }
