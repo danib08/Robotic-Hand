@@ -18,7 +18,7 @@ public class Main {
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		RoboGrammarParser parser = new RoboGrammarParser(tokens);
 
-		RoboGrammarParser.StartContext tree = parser.start();
+		RoboGrammarParser.ProgramContext tree = parser.program();
 
 		RoboGrammarCustomVisitor visitor = new RoboGrammarCustomVisitor();
 		visitor.visit(tree);
