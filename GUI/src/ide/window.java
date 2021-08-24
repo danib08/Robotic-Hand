@@ -26,11 +26,17 @@ import java.awt.event.MouseEvent;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import javax.swing.Action;
+import javax.swing.JScrollPane;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class window {
 
+	private StringBuilder lines;
+	
 	private JFrame frmRobotichandIde;
 	private JTextPane txtpnErrores;
+	private JTextArea LineCounterArea;
 	private final Action action = new SwingAction();
 
 	/**
@@ -65,46 +71,70 @@ public class window {
 		frmRobotichandIde.setBounds(100, 100, 939, 624);
 		frmRobotichandIde.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JTextArea textArea = new JTextArea();
-		
 		txtpnErrores = new JTextPane();
 		txtpnErrores.setEditable(false);
 		txtpnErrores.setText("Errores");
-		
-		JTextPane textPane = new JTextPane();
 		
 		JButton btnNewButton = new JButton("Compilar");
 		btnNewButton.setAction(action);
 		
 		JButton btnNewButton_1 = new JButton("Compilar y ejecutar");
+		
+		JScrollPane scrollPane = new JScrollPane();
+		
+		JTextArea FileArea = new JTextArea();
+		FileArea.setEditable(false);
+		FileArea.setLineWrap(true);
 		GroupLayout groupLayout = new GroupLayout(frmRobotichandIde.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addComponent(textPane, GroupLayout.PREFERRED_SIZE, 176, GroupLayout.PREFERRED_SIZE)
+					.addComponent(FileArea, GroupLayout.PREFERRED_SIZE, 176, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(txtpnErrores, GroupLayout.DEFAULT_SIZE, 731, Short.MAX_VALUE)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(btnNewButton, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 359, GroupLayout.PREFERRED_SIZE))
-						.addComponent(txtpnErrores, GroupLayout.DEFAULT_SIZE, 731, Short.MAX_VALUE)
-						.addComponent(textArea, GroupLayout.DEFAULT_SIZE, 731, Short.MAX_VALUE))
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 731, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addComponent(textArea, GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnNewButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(btnNewButton_1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(txtpnErrores, GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 401, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(btnNewButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(btnNewButton_1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(txtpnErrores, GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE))
+						.addComponent(FileArea, GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE))
 					.addContainerGap())
-				.addComponent(textPane, GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
 		);
+		lines = new StringBuilder();
+		JTextArea codeArea = new JTextArea();
+		codeArea.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					String[] numLastLine = codeArea.getText().split("\n");
+					int lineCount = numLastLine.length;
+					lines.append("  " + String.valueOf(lineCount) + "   ");
+					lines.append("\n");
+					LineCounterArea.setText(lines.toString());
+		        }
+			}
+		});
+		codeArea.setLineWrap(true);
+		scrollPane.setViewportView(codeArea);
+		
+		LineCounterArea = new JTextArea();
+		LineCounterArea.setEditable(false);
+		scrollPane.setRowHeaderView(LineCounterArea);
 		frmRobotichandIde.getContentPane().setLayout(groupLayout);
 		
 		JMenuBar menuBar = new JMenuBar();
