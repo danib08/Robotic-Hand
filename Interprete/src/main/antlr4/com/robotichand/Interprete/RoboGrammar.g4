@@ -10,9 +10,8 @@ grammar RoboGrammar;
 	Map<String, Object> symbolTable = new HashMap<String, Object>();
 }
 
-program: PROGRAM OPEN_BRAC sentence* CLOSE_BRAC;
 
-sentence: primitive_function | var_assign;
+sentence: (println | var_assign)*;
 
 var_assign: LET ID ASSIGN expression SEMICOLON
 		{symbolTable.put($ID.text, $expression.value);};
@@ -22,30 +21,34 @@ primitive_function: opera | println;
 println: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
 		{System.out.println($expression.value);};
 
-opera: OPERA OPEN_PAR operator COMMA o1=operando COMMA o2=operando CLOSE_PAR SEMICOLON
+opera returns [Object result]: OPERA OPEN_PAR operator COMMA o1=operando COMMA o2=operando CLOSE_PAR 
 		{
+			int result;
 			if (($operator.text).equals("+")) {
-				int result = (Integer.parseInt($o1.text) + Integer.parseInt($o2.text));
-				System.out.println(result);
+				result = (Integer.parseInt($o1.text) + Integer.parseInt($o2.text));
+				
 			}else if(($operator.text).equals("*")){
-				int result = (Integer.parseInt($o1.text) * Integer.parseInt($o2.text));
-				System.out.println(result);
+				result = (Integer.parseInt($o1.text) * Integer.parseInt($o2.text));
+			
 			}else if (($operator.text).equals("/")){
-				int result = (Integer.parseInt($o1.text) / Integer.parseInt($o2.text));
-				System.out.println(result);
+				result = (Integer.parseInt($o1.text) / Integer.parseInt($o2.text));
+				
 			}else if (($operator.text).equals("-")){
-				int result = (Integer.parseInt($o1.text) - Integer.parseInt($o2.text));
-				System.out.println(result);
+				result = (Integer.parseInt($o1.text) - Integer.parseInt($o2.text));
+				
 			}else{
-				int result = (int)(Math.pow(Integer.parseInt($o1.text), Integer.parseInt($o2.text)));
-				System.out.println(result);
+				result = (int)(Math.pow(Integer.parseInt($o1.text), Integer.parseInt($o2.text)));
+				
 			}
+			$result = result;
 		};
 
 expression returns [Object value]: 
 		NUMBER {$value = Integer.parseInt($NUMBER.text);}
 		| 
-		ID {$value = symbolTable.get($ID.text);};
+		ID {$value = symbolTable.get($ID.text);}
+		|
+		opera{$value = $opera.result;};
 
 constant returns [Object value]: 
 		NUMBER {$value = Integer.parseInt($NUMBER.text);};
@@ -54,7 +57,7 @@ operator: SUM | MINUS | MULT | DIV | EXP;
 
 operando: NUMBER | ID | OPERA;
 
-PROGRAM: 'program';
+
 PRINTLN: 'println!';
 LET: 'let';
 OPERA: 'OPERA';
@@ -74,7 +77,7 @@ CLOSE_PAR: ')';
 OPEN_BRAC: '{';
 CLOSE_BRAC: '}';
 
-NUMBER: [0-9]+;
+ NUMBER: [0-9]+;
 
 ID: [a-zA-Z#_?][a-zA-Z0-9]*;
 

@@ -1,8 +1,2 @@
-program {
-	let y = 7;
-	OPERA(+,15,5);
-	OPERA(-,15,5);
-	OPERA(*,15,5);
-	OPERA(/,15,5);
-	OPERA(**,15,5);
-}
+let y = OPERA(+,5,5);
+println!(y);
