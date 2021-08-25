@@ -1,0 +1,4 @@
+
+let a = true;
+let y = OPERA(+,2,a);
+println!(y);
