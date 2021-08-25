@@ -1,2 +1,4 @@
-let y = OPERA(+,5,5);
+
+let a = 19; 
+let y = OPERA(-,a,OPERA(-,OPERA(+,4,1),1));
 println!(y);

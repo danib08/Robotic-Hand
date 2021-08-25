@@ -21,23 +21,23 @@ primitive_function: opera | println;
 println: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
 		{System.out.println($expression.value);};
 
-opera returns [Object result]: OPERA OPEN_PAR operator COMMA o1=operando COMMA o2=operando CLOSE_PAR 
+opera returns [int result]: OPERA OPEN_PAR operator COMMA o1 = operando COMMA o2 = operando CLOSE_PAR 
 		{
 			int result;
 			if (($operator.text).equals("+")) {
-				result = (Integer.parseInt($o1.text) + Integer.parseInt($o2.text));
+				result = ($o1.value + $o2.value);
 				
 			}else if(($operator.text).equals("*")){
-				result = (Integer.parseInt($o1.text) * Integer.parseInt($o2.text));
+				result = ($o1.value * $o2.value);
 			
 			}else if (($operator.text).equals("/")){
-				result = (Integer.parseInt($o1.text) / Integer.parseInt($o2.text));
+				result = ($o1.value / $o2.value);
 				
 			}else if (($operator.text).equals("-")){
-				result = (Integer.parseInt($o1.text) - Integer.parseInt($o2.text));
+				result = ($o1.value - $o2.value);
 				
 			}else{
-				result = (int)(Math.pow(Integer.parseInt($o1.text), Integer.parseInt($o2.text)));
+				result = (int)(Math.pow($o1.value, $o2.value));
 				
 			}
 			$result = result;
@@ -55,7 +55,12 @@ constant returns [Object value]:
 		
 operator: SUM | MINUS | MULT | DIV | EXP;
 
-operando: NUMBER | ID | OPERA;
+operando returns [int value]: 
+		NUMBER {$value = Integer.parseInt($NUMBER.text);}
+		| 
+		ID {$value = (int)symbolTable.get($ID.text);}
+		|
+		opera{$value = $opera.result;};
 
 
 PRINTLN: 'println!';
