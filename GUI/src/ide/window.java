@@ -18,6 +18,10 @@ import javax.swing.JButton;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rtextarea.RTextScrollPane;
+
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import java.awt.Component;
@@ -29,6 +33,9 @@ import javax.swing.Action;
 import javax.swing.JScrollPane;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.Color;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 
 public class window {
 
@@ -36,8 +43,8 @@ public class window {
 	
 	private JFrame frmRobotichandIde;
 	private JTextPane txtpnErrores;
-	private JTextArea LineCounterArea;
 	private final Action action = new SwingAction();
+	private JPanel panel;
 
 	/**
 	 * Launch the application.
@@ -58,8 +65,17 @@ public class window {
 	/**
 	 * Create the application.
 	 */
-	public window() {
+	public window(){
 		initialize();
+		RSyntax();
+	}
+	
+	public void RSyntax(){
+		RSyntaxTextArea textArea = new RSyntaxTextArea();
+		panel.setLayout(new BorderLayout(0, 0));
+		
+		RTextScrollPane sp = new RTextScrollPane(textArea);
+	    panel.add(sp);
 	}
 
 	/**
@@ -67,6 +83,8 @@ public class window {
 	 */
 	private void initialize() {
 		frmRobotichandIde = new JFrame();
+		frmRobotichandIde.getContentPane().setBackground(Color.DARK_GRAY);
+		frmRobotichandIde.setBackground(Color.DARK_GRAY);
 		frmRobotichandIde.setTitle("RoboticHand IDE");
 		frmRobotichandIde.setBounds(100, 100, 939, 624);
 		frmRobotichandIde.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -75,29 +93,40 @@ public class window {
 		txtpnErrores.setEditable(false);
 		txtpnErrores.setText("Errores");
 		
+		panel = new JPanel();
+		
 		JButton btnNewButton = new JButton("Compilar");
 		btnNewButton.setAction(action);
 		
 		JButton btnNewButton_1 = new JButton("Compilar y ejecutar");
 		
-		JScrollPane scrollPane = new JScrollPane();
-		
 		JTextArea FileArea = new JTextArea();
-		FileArea.setEditable(false);
 		FileArea.setLineWrap(true);
+		FileArea.setForeground(Color.LIGHT_GRAY);
+		FileArea.setBackground(Color.DARK_GRAY);
+		FileArea.setEditable(false);
+		
+		JSeparator separator = new JSeparator();
+		separator.setOrientation(SwingConstants.VERTICAL);
+		separator.setBackground(Color.LIGHT_GRAY);
+		
+		
 		GroupLayout groupLayout = new GroupLayout(frmRobotichandIde.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
 					.addComponent(FileArea, GroupLayout.PREFERRED_SIZE, 176, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addGap(28)
 					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(txtpnErrores, GroupLayout.DEFAULT_SIZE, 731, Short.MAX_VALUE)
+						.addComponent(txtpnErrores, GroupLayout.DEFAULT_SIZE, 701, Short.MAX_VALUE)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(btnNewButton, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+							.addComponent(btnNewButton, GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 359, GroupLayout.PREFERRED_SIZE))
-						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 731, Short.MAX_VALUE))
+						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 701, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
@@ -105,36 +134,18 @@ public class window {
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 401, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(panel, GroupLayout.PREFERRED_SIZE, 406, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(btnNewButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(btnNewButton_1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(txtpnErrores, GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE))
+						.addComponent(separator, GroupLayout.PREFERRED_SIZE, 530, GroupLayout.PREFERRED_SIZE)
 						.addComponent(FileArea, GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		lines = new StringBuilder();
-		JTextArea codeArea = new JTextArea();
-		codeArea.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					String[] numLastLine = codeArea.getText().split("\n");
-					int lineCount = numLastLine.length;
-					lines.append("  " + String.valueOf(lineCount) + "   ");
-					lines.append("\n");
-					LineCounterArea.setText(lines.toString());
-		        }
-			}
-		});
-		codeArea.setLineWrap(true);
-		scrollPane.setViewportView(codeArea);
-		
-		LineCounterArea = new JTextArea();
-		LineCounterArea.setEditable(false);
-		scrollPane.setRowHeaderView(LineCounterArea);
 		frmRobotichandIde.getContentPane().setLayout(groupLayout);
 		
 		JMenuBar menuBar = new JMenuBar();
