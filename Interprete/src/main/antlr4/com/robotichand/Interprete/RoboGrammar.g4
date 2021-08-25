@@ -21,26 +21,30 @@ primitive_function: opera | println;
 println: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
 		{System.out.println($expression.value);};
 
-opera returns [int result]: OPERA OPEN_PAR operator COMMA o1 = operando COMMA o2 = operando CLOSE_PAR 
+opera returns [int result]: OPERA OPEN_PAR operator COMMA o1 = expression COMMA o2 = expression CLOSE_PAR 
 		{
-			int result;
-			if (($operator.text).equals("+")) {
-				result = ($o1.value + $o2.value);
-				
-			}else if(($operator.text).equals("*")){
-				result = ($o1.value * $o2.value);
-			
-			}else if (($operator.text).equals("/")){
-				result = ($o1.value / $o2.value);
-				
-			}else if (($operator.text).equals("-")){
-				result = ($o1.value - $o2.value);
-				
+			if(($o1.value).getClass() == Boolean.class || ($o2.value).getClass() == Boolean.class){
+				System.out.println("Invalid type. Expected Integer, instead got boolean");
 			}else{
-				result = (int)(Math.pow($o1.value, $o2.value));
+				int result;
+				if (($operator.text).equals("+")) {
+					result = ((int)$o1.value + (int)$o2.value);
+					
+				}else if(($operator.text).equals("*")){
+					result = ((int)$o1.value * (int)$o2.value);
 				
-			}
-			$result = result;
+				}else if (($operator.text).equals("/")){
+					result = ((int)$o1.value / (int)$o2.value);
+					
+				}else if (($operator.text).equals("-")){
+					result = ((int)$o1.value - (int)$o2.value);
+					
+				}else{
+					result = (int)(Math.pow((int)$o1.value, (int)$o2.value));
+					
+				}
+				$result = result;
+				}
 		};
 
 expression returns [Object value]: 
@@ -48,24 +52,23 @@ expression returns [Object value]:
 		| 
 		ID {$value = symbolTable.get($ID.text);}
 		|
-		opera{$value = $opera.result;};
-
-constant returns [Object value]: 
-		NUMBER {$value = Integer.parseInt($NUMBER.text);};
+		opera {$value = $opera.result;}
+		|
+		bool {$value = $bool.value;};
+		
+bool returns[boolean value]: 
+		TRUE {$value = true;} 
+		| 
+		FALSE {$value = false;};
 		
 operator: SUM | MINUS | MULT | DIV | EXP;
-
-operando returns [int value]: 
-		NUMBER {$value = Integer.parseInt($NUMBER.text);}
-		| 
-		ID {$value = (int)symbolTable.get($ID.text);}
-		|
-		opera{$value = $opera.result;};
 
 
 PRINTLN: 'println!';
 LET: 'let';
 OPERA: 'OPERA';
+TRUE:'true';
+FALSE:'false';
 
 ASSIGN: '=';
 SEMICOLON: ';';
@@ -82,7 +85,7 @@ CLOSE_PAR: ')';
 OPEN_BRAC: '{';
 CLOSE_BRAC: '}';
 
- NUMBER: [0-9]+;
+NUMBER: [0-9]+;
 
 ID: [a-zA-Z#_?][a-zA-Z0-9]*;
 
