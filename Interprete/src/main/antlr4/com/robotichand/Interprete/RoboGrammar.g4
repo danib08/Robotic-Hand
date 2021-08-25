@@ -3,6 +3,7 @@ grammar RoboGrammar;
 @parser::header {
 	import java.util.Map;
 	import java.util.HashMap;
+	import java.lang.Math;
 }
 
 @parser::members {
@@ -24,7 +25,19 @@ println: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
 opera: OPERA OPEN_PAR operator COMMA o1=operando COMMA o2=operando CLOSE_PAR SEMICOLON
 		{
 			if (($operator.text).equals("+")) {
-				int result = Integer.parseInt($o1.text) + Integer.parseInt($o2.text);
+				int result = (Integer.parseInt($o1.text) + Integer.parseInt($o2.text));
+				System.out.println(result);
+			}else if(($operator.text).equals("*")){
+				int result = (Integer.parseInt($o1.text) * Integer.parseInt($o2.text));
+				System.out.println(result);
+			}else if (($operator.text).equals("/")){
+				int result = (Integer.parseInt($o1.text) / Integer.parseInt($o2.text));
+				System.out.println(result);
+			}else if (($operator.text).equals("-")){
+				int result = (Integer.parseInt($o1.text) - Integer.parseInt($o2.text));
+				System.out.println(result);
+			}else{
+				int result = (int)(Math.pow(Integer.parseInt($o1.text), Integer.parseInt($o2.text)));
 				System.out.println(result);
 			}
 		};

@@ -1,4 +1,8 @@
 program {
 	let y = 7;
 	OPERA(+,15,5);
+	OPERA(-,15,5);
+	OPERA(*,15,5);
+	OPERA(/,15,5);
+	OPERA(**,15,5);
 }
