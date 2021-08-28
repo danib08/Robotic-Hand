@@ -14,7 +14,33 @@ grammar RoboGrammar;
 sentence: (println | var_assign)*;
 
 var_assign: LET ID ASSIGN expression SEMICOLON
-		{symbolTable.put($ID.text, $expression.value);};
+		{
+			boolean var_exists = symbolTable.containsKey($ID.text);
+			
+			if ($expression.value == null){
+				System.out.println($ID.text + " not defined");
+			}
+			else if (!var_exists) {
+				symbolTable.put($ID.text, $expression.value);
+			}
+			else {
+				 Object original_class = (symbolTable.get($ID.text)).getClass();
+				
+				if (($expression.value).getClass() == original_class) {
+					symbolTable.put($ID.text, $expression.value);
+				}
+				else {
+					String type;
+					if (original_class == Boolean.class) {
+						type = "boolean";
+					}
+					else {
+						type = "integer";
+					}
+					System.out.println("Expected " + type + " type. Can't convert different types." );
+				}
+			}
+		};
 		
 primitive_function: opera | println;
 
