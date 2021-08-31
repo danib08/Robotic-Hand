@@ -49,12 +49,16 @@ import java.awt.event.KeyEvent;
 import java.awt.Color;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.ImageIcon;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.Font;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 public class window {
 	
@@ -66,9 +70,13 @@ public class window {
 	private final Action action = new runAction();
 	private RSyntaxTextArea textArea;
 	private final JFileChooser fileChooser = new JFileChooser();
+	private DefaultMutableTreeNode root;
+	private DefaultTreeModel treeModel;
 	private File file;
 	private RSyntaxTextArea input;
     private RSyntaxTextArea output;
+
+
 
 	/**
 	 * Launch the application.
@@ -84,6 +92,7 @@ public class window {
 				}
 			}
 		});
+		
 	}
 
 	/**
@@ -100,14 +109,7 @@ public class window {
 	 */
 	public void RSyntax() throws IOException{
 		textArea = new RSyntaxTextArea();
-		
-		/**PRUEBA 
-		input = new RSyntaxTextArea(14, 60);
-        input.setCodeFoldingEnabled(true);
-        input.setWrapStyleWord(true);
-        input.setLineWrap(true);*/
-        
-        
+                
 		panel.setLayout(new BorderLayout(0, 0));
 		
 		RTextScrollPane sp = new RTextScrollPane(textArea);
@@ -128,13 +130,6 @@ public class window {
 	      line = in.readLine();
 	    }
 	    in.close();
-	}
-	
-	/**
-	 * Open a file and show up in text area
-	 */
-	public void openFile() {
-		
 	}
 
 	/**
@@ -161,21 +156,31 @@ public class window {
 		panel = new JPanel();
 		panel.setBackground(Color.DARK_GRAY);
 		
-		JButton btnNewButton = new JButton("Compilar");
+		JButton btnNewButton = new JButton();
+		btnNewButton.setForeground(Color.WHITE);
+		btnNewButton.setBackground(Color.DARK_GRAY);
 		btnNewButton.setAction(compileAction);
 		
 		JButton btnNewButton_1 = new JButton("Compilar y ejecutar");
+		btnNewButton_1.setForeground(Color.WHITE);
+		btnNewButton_1.setBackground(Color.DARK_GRAY);
 		btnNewButton_1.setAction(action);
-		
-		JTextArea FileArea = new JTextArea();
-		FileArea.setLineWrap(true);
-		FileArea.setForeground(Color.LIGHT_GRAY);
-		FileArea.setBackground(Color.DARK_GRAY);
-		FileArea.setEditable(false);
 		
 		JSeparator separator = new JSeparator();
 		separator.setOrientation(SwingConstants.VERTICAL);
 		separator.setBackground(Color.LIGHT_GRAY);
+
+        File fileRoot = new File("../Interprete/test/");
+        root = new DefaultMutableTreeNode(new FileNode(fileRoot));
+        treeModel = new DefaultTreeModel(root);
+		
+		JTree tree = new JTree(treeModel);
+		tree.setShowsRootHandles(true);
+
+        CreateChildNodes ccn = new CreateChildNodes(fileRoot, root);
+        new Thread(ccn).start();
+
+		tree.setBackground(Color.DARK_GRAY);
 		
 		
 		GroupLayout groupLayout = new GroupLayout(frmRobotichandIde.getContentPane());
@@ -183,33 +188,33 @@ public class window {
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(FileArea, GroupLayout.PREFERRED_SIZE, 176, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(tree, GroupLayout.PREFERRED_SIZE, 206, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addGap(18)
 					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 701, Short.MAX_VALUE)
+						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(btnNewButton, GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
+							.addComponent(btnNewButton, GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
 							.addGap(10)
-							.addComponent(btnNewButton_1, GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE))
-						.addComponent(txtpnErrores, GroupLayout.DEFAULT_SIZE, 701, Short.MAX_VALUE))
+							.addComponent(btnNewButton_1, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE))
+						.addComponent(txtpnErrores, GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addComponent(separator, GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(FileArea, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(panel, GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
-								.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(txtpnErrores, GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)))
+					.addComponent(panel, GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(txtpnErrores, GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
+					.addContainerGap())
+				.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 
