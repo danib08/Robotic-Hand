@@ -25,7 +25,12 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
+import org.apache.commons.io.FileUtils;
+import java.nio.charset.Charset;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -46,6 +51,7 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.ImageIcon;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -55,8 +61,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class window {
-
-	private StringBuilder lines;
 	
 	private JFrame frmRobotichandIde;
 	private JTextPane txtpnErrores;
@@ -64,9 +68,13 @@ public class window {
 	private JPanel panel;
 	private final Action openFile = new openFile();
 	private final Action action = new runAction();
+	private RSyntaxTextArea textArea;
 	private final JFileChooser fileChooser = new JFileChooser();
 	private DefaultMutableTreeNode root;
 	private DefaultTreeModel treeModel;
+	private File file;
+	private RSyntaxTextArea input;
+    private RSyntaxTextArea output;
 
 
 
@@ -89,20 +97,31 @@ public class window {
 
 	/**
 	 * Create the application.
+	 * @throws IOException 
 	 */
-	public window(){
+	public window() throws IOException{
 		initialize();
 		RSyntax();
 	}
 	/**
 	 * Shows code lines in the text area
+	 * @throws IOException 
 	 */
-	public void RSyntax(){
-		RSyntaxTextArea textArea = new RSyntaxTextArea();
+	public void RSyntax() throws IOException{
+		textArea = new RSyntaxTextArea();
+		
+		/**PRUEBA 
+		input = new RSyntaxTextArea(14, 60);
+        input.setCodeFoldingEnabled(true);
+        input.setWrapStyleWord(true);
+        input.setLineWrap(true);*/
+        
+        
 		panel.setLayout(new BorderLayout(0, 0));
 		
 		RTextScrollPane sp = new RTextScrollPane(textArea);
 	    panel.add(sp);
+	    
 	    
 	    try {
 		     Theme theme = Theme.load(getClass().getResourceAsStream(
@@ -111,13 +130,19 @@ public class window {
 		  } catch (IOException ioe) { // Never happens
 		     ioe.printStackTrace();
 		  }
+	    BufferedReader in = new BufferedReader(new FileReader(file));
+	    String line = in.readLine();
+	    while(line != null){
+	      textArea.append(line + "\n");
+	      line = in.readLine();
+	    }
+	    in.close();
 	}
 	
 	/**
 	 * Open a file and show up in text area
 	 */
 	public void openFile() {
-		
 		
 	}
 
@@ -207,7 +232,7 @@ public class window {
 					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
 					.addContainerGap())
 		);
-		lines = new StringBuilder();
+
 		frmRobotichandIde.getContentPane().setLayout(groupLayout);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -220,37 +245,44 @@ public class window {
 		mntmNewMenuItem.setForeground(Color.LIGHT_GRAY);
 		mntmNewMenuItem.setBackground(Color.DARK_GRAY);
 		menuBar.add(mntmNewMenuItem);
-	}
-	private static void addPopup(Component component, final JPopupMenu popup) {
-		component.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-			public void mouseReleased(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-			private void showMenu(MouseEvent e) {
-				popup.show(e.getComponent(), e.getX(), e.getY());
-			}
-		});
+		
+		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Guardar");
+		mntmNewMenuItem_1.setIcon(new ImageIcon(window.class.getResource("/icons/save.png")));
+		mntmNewMenuItem_1.setHorizontalAlignment(SwingConstants.CENTER);
+		mntmNewMenuItem_1.setForeground(Color.LIGHT_GRAY);
+		mntmNewMenuItem_1.setBackground(Color.DARK_GRAY);
+		menuBar.add(mntmNewMenuItem_1);
+		
+		// Open file 
+		file = new File("../Interprete/test/test.rbg");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(null, "txt", "rbg");
+		fileChooser.setFileFilter(filter);
 	}
 	
 	// Button actions 
 	private class compileAction extends AbstractAction {
-		Icon checkIcon = new ImageIcon(window.class.getResource("/icons/check.png"));
-		public compileAction() {
+		Icon checkIcon = new ImageIcon(window.class.getResource("/icons/search.png"));
+		public void compileAction() {
 			putValue(NAME, "Compilar");
 			putValue(SHORT_DESCRIPTION, "Compila el programa");
-			putValue( Action.SMALL_ICON, checkIcon );
+			putValue(Action.SMALL_ICON, checkIcon);
 		}
 		public void actionPerformed(ActionEvent e) {
 			txtpnErrores.setText("hello world");
 		}
 	}
+	private class runAction extends AbstractAction {
+		Icon runIcon = new ImageIcon(window.class.getResource("/icons/run.png"));
+		public runAction() {
+			putValue(NAME, "Compilar y ejecutar");
+			putValue(SHORT_DESCRIPTION, "Compila y ejecuta el programa");
+			putValue( Action.SMALL_ICON, runIcon );
+		}
+		public void actionPerformed(ActionEvent e) {
+		}
+	}
+	
+	// Open file action
 	private class openFile extends AbstractAction {
 		Icon openIcon = new ImageIcon(window.class.getResource("/icons/open.png"));
 		public openFile() {
@@ -261,23 +293,36 @@ public class window {
 		public void actionPerformed(ActionEvent e) {
 			int result = fileChooser.showOpenDialog(frmRobotichandIde);
             if (result==JFileChooser.APPROVE_OPTION) {
+                file = fileChooser.getSelectedFile();
+                try {
+                    String content = FileUtils.readFileToString(file);
+                    textArea.setText(content);
+                    output.setText("");
+                } catch (Exception e1) {
+                }  
+            }
+		}
+	}
+	
+	// Save file action
+	private class saveFile extends AbstractAction {
+		Icon saveIcon = new ImageIcon(window.class.getResource("/icons/save.png"));
+		public saveFile() {
+			putValue(NAME, "Guardar");
+			putValue(SHORT_DESCRIPTION, "Guardar un archivo");
+			putValue( Action.SMALL_ICON, saveIcon );
+		}
+		public void actionPerformed(ActionEvent e) {
+			int value = fileChooser.showSaveDialog(frmRobotichandIde);
+            if (value == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 try {
-                    //panel.setPage(file.toURI().toURL());
-                } catch(Exception e1) {
-                    e1.printStackTrace();
+                    FileUtils.writeStringToFile(file, input.getText(), Charset.forName("UTF-8"));
+                    output.setText("");
+                } catch (Exception e1) {
                 }
             }
 		}
 	}
-	private class runAction extends AbstractAction {
-		Icon runIcon = new ImageIcon(window.class.getResource("/icons/play.png"));
-		public runAction() {
-			putValue(NAME, "Compilar y ejecutar");
-			putValue(SHORT_DESCRIPTION, "Compila y ejecuta el programa");
-			putValue( Action.SMALL_ICON, runIcon );
-		}
-		public void actionPerformed(ActionEvent e) {
-		}
-	}
+	
 }
