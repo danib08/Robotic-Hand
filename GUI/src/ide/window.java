@@ -64,10 +64,10 @@ public class window {
 	
 	private JFrame frmRobotichandIde;
 	private JTextPane txtpnErrores;
-	private final Action compileAction = new compileAction();
 	private JPanel panel;
 	private final Action openFile = new openFile();
 	private final Action action = new runAction();
+	private final Action compile = new compileAction();
 	private RSyntaxTextArea textArea;
 	private final JFileChooser fileChooser = new JFileChooser();
 	private DefaultMutableTreeNode root;
@@ -156,15 +156,15 @@ public class window {
 		panel = new JPanel();
 		panel.setBackground(Color.DARK_GRAY);
 		
-		JButton btnNewButton = new JButton();
-		btnNewButton.setForeground(Color.WHITE);
-		btnNewButton.setBackground(Color.DARK_GRAY);
-		btnNewButton.setAction(compileAction);
-		
 		JButton btnNewButton_1 = new JButton("Compilar y ejecutar");
 		btnNewButton_1.setForeground(Color.WHITE);
 		btnNewButton_1.setBackground(Color.DARK_GRAY);
 		btnNewButton_1.setAction(action);
+		
+		JButton btnNewButton_1_1 = new JButton("Compilar");
+		btnNewButton_1_1.setForeground(Color.WHITE);
+		btnNewButton_1_1.setBackground(Color.DARK_GRAY);
+		btnNewButton_1_1.setAction(compile);
 		
 		JSeparator separator = new JSeparator();
 		separator.setOrientation(SwingConstants.VERTICAL);
@@ -183,6 +183,8 @@ public class window {
 		tree.setBackground(Color.DARK_GRAY);
 		
 		
+		
+		
 		GroupLayout groupLayout = new GroupLayout(frmRobotichandIde.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -195,26 +197,26 @@ public class window {
 					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
 						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(btnNewButton, GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
-							.addGap(10)
+							.addComponent(btnNewButton_1_1, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)
+							.addGap(7)
 							.addComponent(btnNewButton_1, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE))
 						.addComponent(txtpnErrores, GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
-				.addComponent(separator, GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addComponent(separator, GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addComponent(panel, GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
+					.addComponent(panel, GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnNewButton, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
+						.addComponent(btnNewButton_1_1, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(txtpnErrores, GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
+					.addComponent(txtpnErrores, GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
 					.addContainerGap())
-				.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
-					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 
@@ -246,14 +248,14 @@ public class window {
 	
 	// Button actions 
 	private class compileAction extends AbstractAction {
-		Icon checkIcon = new ImageIcon(window.class.getResource("/icons/search.png"));
-		public void compileAction() {
+		Icon runIcon = new ImageIcon(window.class.getResource("/icons/search.png"));
+		public compileAction() {
 			putValue(NAME, "Compilar");
 			putValue(SHORT_DESCRIPTION, "Compila el programa");
-			putValue(Action.SMALL_ICON, checkIcon);
+			putValue( Action.SMALL_ICON, runIcon );
 		}
 		public void actionPerformed(ActionEvent e) {
-			txtpnErrores.setText("hello world");
+			txtpnErrores.setText("Compilado y ejecutado");
 		}
 	}
 	private class runAction extends AbstractAction {
@@ -264,6 +266,7 @@ public class window {
 			putValue( Action.SMALL_ICON, runIcon );
 		}
 		public void actionPerformed(ActionEvent e) {
+			txtpnErrores.setText("Compilado y ejecutado");
 		}
 	}
 	
@@ -295,19 +298,18 @@ public class window {
 		public saveFile() {
 			putValue(NAME, "Guardar");
 			putValue(SHORT_DESCRIPTION, "Guardar un archivo");
-			putValue( Action.SMALL_ICON, saveIcon );
+			putValue( Action.SMALL_ICON, saveIcon);
 		}
 		public void actionPerformed(ActionEvent e) {
 			int value = fileChooser.showSaveDialog(frmRobotichandIde);
             if (value == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 try {
-                    FileUtils.writeStringToFile(file, input.getText(), Charset.forName("UTF-8"));
+                    FileUtils.writeStringToFile(file, textArea.getText(), Charset.forName("UTF-8"));
                     output.setText("");
                 } catch (Exception e1) {
                 }
             }
 		}
 	}
-	
 }
