@@ -109,14 +109,7 @@ public class window {
 	 */
 	public void RSyntax() throws IOException{
 		textArea = new RSyntaxTextArea();
-		
-		/**PRUEBA 
-		input = new RSyntaxTextArea(14, 60);
-        input.setCodeFoldingEnabled(true);
-        input.setWrapStyleWord(true);
-        input.setLineWrap(true);*/
-        
-        
+                
 		panel.setLayout(new BorderLayout(0, 0));
 		
 		RTextScrollPane sp = new RTextScrollPane(textArea);
@@ -137,13 +130,6 @@ public class window {
 	      line = in.readLine();
 	    }
 	    in.close();
-	}
-	
-	/**
-	 * Open a file and show up in text area
-	 */
-	public void openFile() {
-		
 	}
 
 	/**
@@ -190,7 +176,6 @@ public class window {
 		
 		JTree tree = new JTree(treeModel);
 		tree.setShowsRootHandles(true);
-        JScrollPane scrollPane = new JScrollPane(tree);
 
         CreateChildNodes ccn = new CreateChildNodes(fileRoot, root);
         new Thread(ccn).start();
