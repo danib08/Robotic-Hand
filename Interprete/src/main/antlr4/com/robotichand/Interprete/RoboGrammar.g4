@@ -57,23 +57,26 @@ sentence returns [ASTNode node]: println {$node = $println.node};
 //			}
 //		};
 
-conditional returns [ASTNode node]: IF condition 
+conditional returns [ASTNode node]: IF (c1 = condition) 
 			{
 				List<ASTNode node> body = new ArrayList<ASTNode>();
+				List<List<ASTNode> list> elseIfBodies = new ArrayList<List<ASTNode>>();
+				List<ASTNode node> elseIfConds = new ArrayList<ASTNode>();
 			}
 			OPEN_BRAC (s1 = sentence {body.add($s1.node);})* CLOSE_BRAC
-			ELSE 
+			
+			(ELSE_IF {List<ASTNode node> elseIfBody = new ArrayList<ASTNode>();}
+			(c2 = condition {elseIfConds.add($c2.node);})* 
+				OPEN_BRAC (s2 = sentence {elseIfBody.add($s2.node);})* CLOSE_BRAC {elseIfBodies.add(elseIfBody);})*
+				
+			(ELSE 
 			{
 				List<ASTNode node> elseBody = new ArrayList<ASTNode>();
 			}
-			OPEN_BRAC (s2 = sentence {elseBody.add($s2.node);})* CLOSE_BRAC
+			OPEN_BRAC (s3 = sentence {elseBody.add($s3.node);})* CLOSE_BRAC
 			{
-				$node = new IfCond($condition.node, body, elseBody);
-			};
-		
-//conditional returns [ASTNode node]: IF condition OPEN_BRAC (sentence)* CLOSE_BRAC
-			//(ELSE_IF condition OPEN_BRAC (sentence*) CLOSE_BRAC)*
-			//(ELSE OPEN_BRAC (sentence)* CLOSE_BRAC)?;
+				$node = new IfCond($c1.node, body, elseIfConds, elseIfBodies, elseBody);
+			})?;
 
 condition returns [ASTNode node]: bool {$node = $bool.node;};
 
