@@ -4,6 +4,10 @@ grammar RoboGrammar;
 	import java.util.Map;
 	import java.util.HashMap;
 	import java.lang.Math;
+	import com.robotichand.Interprete.ast.ASTNode;
+	import com.robotichand.Interprete.ast.Constant;
+	import com.robotichand.Interprete.ast.IfCond;
+	import com.robotichand.Interprete.ast.PrintLn;
 }
 
 @parser::members {
@@ -12,7 +16,7 @@ grammar RoboGrammar;
 
 
 program:{
-		List<ASTNode node> body = new ArrayList<ASTNode>();
+		List<ASTNode> body = new ArrayList<ASTNode>();
 	}
 	(println {body.add($println.node);} | conditional {body.add($conditional.node);})*
 	{
@@ -22,7 +26,7 @@ program:{
 	};
 //program returns [ASTNode node]: (println | var_assign | conditional)*;
 
-sentence returns [ASTNode node]: println {$node = $println.node};
+sentence returns [ASTNode node]: (println {$node = $println.node;} | conditional {$node = $conditional.node;});
 
 
 //sentence returns [ASTNode node]: println | var_assign;
@@ -59,19 +63,19 @@ sentence returns [ASTNode node]: println {$node = $println.node};
 
 conditional returns [ASTNode node]: IF (c1 = condition) 
 			{
-				List<ASTNode node> body = new ArrayList<ASTNode>();
-				List<List<ASTNode> list> elseIfBodies = new ArrayList<List<ASTNode>>();
-				List<ASTNode node> elseIfConds = new ArrayList<ASTNode>();
+				List<ASTNode> body = new ArrayList<ASTNode>();
+				List<List<ASTNode>> elseIfBodies = new ArrayList<List<ASTNode>>();
+				List<ASTNode> elseIfConds = new ArrayList<ASTNode>();
 			}
 			OPEN_BRAC (s1 = sentence {body.add($s1.node);})* CLOSE_BRAC
 			
-			(ELSE_IF {List<ASTNode node> elseIfBody = new ArrayList<ASTNode>();}
+			(ELSE_IF {List<ASTNode> elseIfBody = new ArrayList<ASTNode>();}
 			(c2 = condition {elseIfConds.add($c2.node);})* 
 				OPEN_BRAC (s2 = sentence {elseIfBody.add($s2.node);})* CLOSE_BRAC {elseIfBodies.add(elseIfBody);})*
 				
 			(ELSE 
 			{
-				List<ASTNode node> elseBody = new ArrayList<ASTNode>();
+				List<ASTNode> elseBody = new ArrayList<ASTNode>();
 			}
 			OPEN_BRAC (s3 = sentence {elseBody.add($s3.node);})* CLOSE_BRAC
 			{
