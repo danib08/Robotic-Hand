@@ -1,5 +1,11 @@
-if true {
-	if (true){
-		println!(0000);
+if false {
+	println!(4545);
+}else if true {
+	if true {
+		println!(252525);
+		println!(6565);
 	}
+	
+}else{
+	println!(888888);
 }	
