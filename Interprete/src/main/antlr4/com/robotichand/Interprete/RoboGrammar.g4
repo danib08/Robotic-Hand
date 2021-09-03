@@ -10,7 +10,8 @@ grammar RoboGrammar;
 	Map<String, Object> symbolTable = new HashMap<String, Object>();
 }
 
-program: {
+
+program:{
 		List<ASTNode node> body = new ArrayList<ASTNode>();
 	}
 	(println {body.add($println.node);} | conditional {body.add($conditional.node);})*
@@ -18,12 +19,11 @@ program: {
 		for(ASTNode n : body) {
 			n.execute();
 		} 		
-	}
-	;
-
+	};
 //program returns [ASTNode node]: (println | var_assign | conditional)*;
 
 sentence returns [ASTNode node]: println {$node = $println.node};
+
 
 //sentence returns [ASTNode node]: println | var_assign;
 
@@ -68,14 +68,14 @@ conditional returns [ASTNode node]: IF condition
 			}
 			OPEN_BRAC (s2 = sentence {elseBody.add($s2.node);})* CLOSE_BRAC
 			{
-				$node = new If($condition.node, body, elseBody);
+				$node = new IfCond($condition.node, body, elseBody);
 			};
 		
 //conditional returns [ASTNode node]: IF condition OPEN_BRAC (sentence)* CLOSE_BRAC
 			//(ELSE_IF condition OPEN_BRAC (sentence*) CLOSE_BRAC)*
 			//(ELSE OPEN_BRAC (sentence)* CLOSE_BRAC)?;
 
-condition returns [ASTNode node]: BOOLEAN {$node = $BOOLEAN.node};
+condition returns [ASTNode node]: bool {$node = $bool.node;};
 
 println returns [ASTNode node]: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
 		{
@@ -107,7 +107,9 @@ println returns [ASTNode node]: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
 				//$result = result;
 				//}
 		//};
-
+bool returns [ASTNode node]:
+		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));};
+		
 expression returns [ASTNode node]: 
 		NUMBER {$node = new Constant(Integer.parseInt($NUMBER.text));}
 		//| 

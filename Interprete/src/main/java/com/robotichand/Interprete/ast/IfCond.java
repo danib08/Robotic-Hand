@@ -2,12 +2,12 @@ package com.robotichand.Interprete.ast;
 
 import java.util.List;
 
-public class If implements ASTNode {
+public class IfCond implements ASTNode {
 	private ASTNode condition;
 	private List<ASTNode> body;
 	private List<ASTNode> elseBody;
 	
-	public If(ASTNode condition, List<ASTNode> body, List<ASTNode> elseBody) {
+	public IfCond(ASTNode condition, List<ASTNode> body, List<ASTNode> elseBody) {
 		super();
 		this.condition = condition;
 		this.body = body;
