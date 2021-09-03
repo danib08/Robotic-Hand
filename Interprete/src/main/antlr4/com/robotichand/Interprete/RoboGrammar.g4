@@ -11,55 +11,116 @@ grammar RoboGrammar;
 }
 
 
-sentence: (println | var_assign)*;
+program:{
+		List<ASTNode node> body = new ArrayList<ASTNode>();
+	}
+	(println {body.add($println.node);} | conditional {body.add($conditional.node);})*
+	{
+		for(ASTNode n : body) {
+			n.execute();
+		} 		
+	};
+//program returns [ASTNode node]: (println | var_assign | conditional)*;
 
-var_assign: LET ID ASSIGN expression SEMICOLON
-		{symbolTable.put($ID.text, $expression.value);};
-		
-primitive_function: opera | println;
+sentence returns [ASTNode node]: println {$node = $println.node};
 
-println: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
-		{System.out.println($expression.value);};
 
-opera returns [int result]: OPERA OPEN_PAR operator COMMA o1 = expression COMMA o2 = expression CLOSE_PAR 
-		{
-			if(($o1.value).getClass() == Boolean.class || ($o2.value).getClass() == Boolean.class){
-				System.out.println("Invalid type. Expected Integer, instead got boolean");
-			}else{
-				int result;
-				if (($operator.text).equals("+")) {
-					result = ((int)$o1.value + (int)$o2.value);
-					
-				}else if(($operator.text).equals("*")){
-					result = ((int)$o1.value * (int)$o2.value);
+//sentence returns [ASTNode node]: println | var_assign;
+
+
+//var_assign returns [ASTNode node]: LET ID ASSIGN expression SEMICOLON
+//		{
+//			boolean var_exists = symbolTable.containsKey($ID.text);
+//			
+//			if ($expression.value == null){
+//				System.out.println($ID.text + " not defined");
+//			}
+//			else if (!var_exists) {
+//				symbolTable.put($ID.text, $expression.value);
+//			}
+//			else {
+//				 Object original_class = (symbolTable.get($ID.text)).getClass();
+//				
+//				if (($expression.value).getClass() == original_class) {
+//					symbolTable.put($ID.text, $expression.value);
+//				}
+//				else {
+//					String type;
+//					if (original_class == Boolean.class) {
+//						type = "boolean";
+//					}
+//					else {
+//						type = "integer";
+//					}
+//					System.out.println("Expected " + type + " type. Can't convert different types." );
+//				}
+//			}
+//		};
+
+conditional returns [ASTNode node]: IF (c1 = condition) 
+			{
+				List<ASTNode node> body = new ArrayList<ASTNode>();
+				List<List<ASTNode> list> elseIfBodies = new ArrayList<List<ASTNode>>();
+				List<ASTNode node> elseIfConds = new ArrayList<ASTNode>();
+			}
+			OPEN_BRAC (s1 = sentence {body.add($s1.node);})* CLOSE_BRAC
+			
+			(ELSE_IF {List<ASTNode node> elseIfBody = new ArrayList<ASTNode>();}
+			(c2 = condition {elseIfConds.add($c2.node);})* 
+				OPEN_BRAC (s2 = sentence {elseIfBody.add($s2.node);})* CLOSE_BRAC {elseIfBodies.add(elseIfBody);})*
 				
-				}else if (($operator.text).equals("/")){
-					result = ((int)$o1.value / (int)$o2.value);
-					
-				}else if (($operator.text).equals("-")){
-					result = ((int)$o1.value - (int)$o2.value);
-					
-				}else{
-					result = (int)(Math.pow((int)$o1.value, (int)$o2.value));
-					
-				}
-				$result = result;
-				}
+			(ELSE 
+			{
+				List<ASTNode node> elseBody = new ArrayList<ASTNode>();
+			}
+			OPEN_BRAC (s3 = sentence {elseBody.add($s3.node);})* CLOSE_BRAC
+			{
+				$node = new IfCond($c1.node, body, elseIfConds, elseIfBodies, elseBody);
+			})?;
+
+condition returns [ASTNode node]: bool {$node = $bool.node;};
+
+println returns [ASTNode node]: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
+		{
+			$node = new PrintLn($expression.node);
 		};
 
-expression returns [Object value]: 
-		NUMBER {$value = Integer.parseInt($NUMBER.text);}
-		| 
-		ID {$value = symbolTable.get($ID.text);}
-		|
-		opera {$value = $opera.result;}
-		|
-		bool {$value = $bool.value;};
+//opera returns [int result]: OPERA OPEN_PAR operator COMMA o1 = expression COMMA o2 = expression CLOSE_PAR 
+	//	{
+		//	if(($o1.value).getClass() == Boolean.class || ($o2.value).getClass() == Boolean.class){
+			//	System.out.println("Invalid type. Expected Integer, instead got boolean");
+			//}else{
+			//	int result;
+			//	if (($operator.text).equals("+")) {
+				//	result = ((int)$o1.value + (int)$o2.value);
+					//
+				//}else if(($operator.text).equals("*")){
+					//result = ((int)$o1.value * (int)$o2.value);
+				//
+				//}else if (($operator.text).equals("/")){
+					//result = ((int)$o1.value / (int)$o2.value);
+					//
+				//}else if (($operator.text).equals("-")){
+					//result = ((int)$o1.value - (int)$o2.value);
+				//	
+				//}else{
+					//result = (int)(Math.pow((int)$o1.value, (int)$o2.value));
+					//
+				//}
+				//$result = result;
+				//}
+		//};
+bool returns [ASTNode node]:
+		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));};
 		
-bool returns[boolean value]: 
-		TRUE {$value = true;} 
+expression returns [ASTNode node]: 
+		NUMBER {$node = new Constant(Integer.parseInt($NUMBER.text));}
+		//| 
+		//ID {$value = symbolTable.get($ID.text);}
+		//|
+		//opera {$value = $opera.result;}
 		| 
-		FALSE {$value = false;};
+		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));};
 		
 operator: SUM | MINUS | MULT | DIV | EXP;
 
@@ -67,8 +128,10 @@ operator: SUM | MINUS | MULT | DIV | EXP;
 PRINTLN: 'println!';
 LET: 'let';
 OPERA: 'OPERA';
-TRUE:'true';
-FALSE:'false';
+BOOLEAN: 'true' | 'false';
+IF: 'if';
+ELSE_IF: 'else if';
+ELSE: 'else';
 
 ASSIGN: '=';
 SEMICOLON: ';';
