@@ -17,33 +17,42 @@ public class VarAssign implements ASTNode {
 
 	@Override
 	public Object execute(Map<String, Object> symbolTable) {
-
-		boolean var_exists = symbolTable.containsKey(name);
 		
-		if (expression.execute(symbolTable) == null){
-			System.out.println("The assigned variable is not defined");
-		}
-		else if (!var_exists) {
-			symbolTable.put(name, expression.execute(symbolTable));
-		}
-		else {
-			 Object original_class = (symbolTable.get(name)).getClass();
+		int length = name.length();
+		
+		if (length >= 3 && length <= 15) {
 			
-			if ((expression.execute(symbolTable)).getClass() == original_class) {
+			boolean var_exists = symbolTable.containsKey(name);
+			
+			if (expression.execute(symbolTable) == null){
+				System.out.println("The assigned variable is not defined");
+			}
+			else if (!var_exists) {
 				symbolTable.put(name, expression.execute(symbolTable));
 			}
 			else {
-				String type;
-				if (original_class == Boolean.class) {
-					type = "boolean";
+				 Object original_class = (symbolTable.get(name)).getClass();
+				
+				if ((expression.execute(symbolTable)).getClass() == original_class) {
+					symbolTable.put(name, expression.execute(symbolTable));
 				}
 				else {
-					type = "integer";
+					String type;
+					if (original_class == Boolean.class) {
+						type = "boolean";
+					}
+					else {
+						type = "integer";
+					}
+					System.out.println("Expected " + type + " type. Can't convert different types." );
 				}
-				System.out.println("Expected " + type + " type. Can't convert different types." );
 			}
 		}
+		else {
+			System.out.println("Identifier must be of length between 3 and 15 characters");
+		}
 
+		
 	return null;
 	}
 
