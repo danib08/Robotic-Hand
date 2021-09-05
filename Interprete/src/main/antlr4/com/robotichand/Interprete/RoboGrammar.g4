@@ -91,7 +91,10 @@ var_assign returns [ASTNode node]:
 		
 
 bool returns [ASTNode node]:
-		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));};
+		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));}
+		|
+		ID {$node = new VarRef($ID.text);}
+		;
 		
 expression returns [ASTNode node]: 
 		NUMBER {$node = new Constant(Integer.parseInt($NUMBER.text));}
