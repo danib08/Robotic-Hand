@@ -18,7 +18,7 @@ grammar RoboGrammar;
 program:{
 		List<ASTNode> body = new ArrayList<ASTNode>();
 	}
-	(println {body.add($println.node);} | conditional {body.add($conditional.node);})*
+	(sentence {body.add($sentence.node);})*
 	{
 		for(ASTNode n : body) {
 			n.execute();
@@ -26,7 +26,7 @@ program:{
 	};
 //program returns [ASTNode node]: (println | var_assign | conditional)*;
 
-sentence returns [ASTNode node]: (println {$node = $println.node;} | conditional {$node = $conditional.node;});
+sentence returns [ASTNode node]: println {$node = $println.node;} | conditional {$node = $conditional.node;};
 
 
 //sentence returns [ASTNode node]: println | var_assign;
@@ -66,21 +66,20 @@ conditional returns [ASTNode node]: IF (c1 = condition)
 				List<ASTNode> body = new ArrayList<ASTNode>();
 				List<List<ASTNode>> elseIfBodies = new ArrayList<List<ASTNode>>();
 				List<ASTNode> elseIfConds = new ArrayList<ASTNode>();
+				List<ASTNode> elseBody = new ArrayList<ASTNode>();
 			}
 			OPEN_BRAC (s1 = sentence {body.add($s1.node);})* CLOSE_BRAC
 			
 			(ELSE_IF {List<ASTNode> elseIfBody = new ArrayList<ASTNode>();}
 			(c2 = condition {elseIfConds.add($c2.node);})* 
-				OPEN_BRAC (s2 = sentence {elseIfBody.add($s2.node);})* CLOSE_BRAC {elseIfBodies.add(elseIfBody);})*
+				OPEN_BRAC (s2 = sentence {elseIfBody.add($s2.node);})* CLOSE_BRAC 
+				{elseIfBodies.add(elseIfBody);})*
 				
-			(ELSE 
-			{
-				List<ASTNode> elseBody = new ArrayList<ASTNode>();
-			}
-			OPEN_BRAC (s3 = sentence {elseBody.add($s3.node);})* CLOSE_BRAC
+			(ELSE OPEN_BRAC (s3 = sentence {elseBody.add($s3.node);})* CLOSE_BRAC)?
 			{
 				$node = new IfCond($c1.node, body, elseIfConds, elseIfBodies, elseBody);
-			})?;
+			};
+			
 
 condition returns [ASTNode node]: bool {$node = $bool.node;};
 
