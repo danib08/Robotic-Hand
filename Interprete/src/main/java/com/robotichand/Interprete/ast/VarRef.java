@@ -2,19 +2,19 @@ package com.robotichand.Interprete.ast;
 
 import java.util.Map;
 
-public class Constant implements ASTNode {
+public class VarRef implements ASTNode {
 	
-	private Object value;
-	
-	public Constant(Object value) {
+	private String name;
+
+	public VarRef(String name) {
 		super();
-		this.value = value;
+		this.name = name;
 	}
 
 	@Override
 	public Object execute(Map<String, Object> symbolTable) {
 		// TODO Auto-generated method stub
-		return value;
+		return symbolTable.get(name);
 	}
 
 }

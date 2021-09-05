@@ -1,11 +1,2 @@
-if false {
-	println!(4545);
-}else if true {
-	if true {
-		println!(252525);
-		println!(6565);
-	}
-	
-}else{
-	println!(888888);
-}	
+let aaa = OPERA(+, OPERA(+, 5, 5), OPERA(+, 5, 5));
+println!(aaa);
