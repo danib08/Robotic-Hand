@@ -10,6 +10,7 @@ grammar RoboGrammar;
 	import com.robotichand.Interprete.ast.PrintLn;
 	import com.robotichand.Interprete.ast.VarAssign;
 	import com.robotichand.Interprete.ast.VarRef;
+	import com.robotichand.Interprete.ast.Opera;
 }
 
 @parser::members {
@@ -30,7 +31,8 @@ program:{
 
 sentence returns [ASTNode node]: println {$node = $println.node;} 
 				| conditional {$node = $conditional.node;}
-				| var_assign {$node = $var_assign.node;};
+				| var_assign {$node = $var_assign.node;}
+				|opera {$node = $opera.node;};
 				
 conditional returns [ASTNode node]: IF (c1 = condition) 
 			{
@@ -59,31 +61,10 @@ println returns [ASTNode node]: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
 			$node = new PrintLn($expression.node);
 		};
 
-//opera returns [int result]: OPERA OPEN_PAR operator COMMA o1 = expression COMMA o2 = expression CLOSE_PAR 
-	//	{
-		//	if(($o1.value).getClass() == Boolean.class || ($o2.value).getClass() == Boolean.class){
-			//	System.out.println("Invalid type. Expected Integer, instead got boolean");
-			//}else{
-			//	int result;
-			//	if (($operator.text).equals("+")) {
-				//	result = ((int)$o1.value + (int)$o2.value);
-					//
-				//}else if(($operator.text).equals("*")){
-					//result = ((int)$o1.value * (int)$o2.value);
-				//
-				//}else if (($operator.text).equals("/")){
-					//result = ((int)$o1.value / (int)$o2.value);
-					//
-				//}else if (($operator.text).equals("-")){
-					//result = ((int)$o1.value - (int)$o2.value);
-				//	
-				//}else{
-					//result = (int)(Math.pow((int)$o1.value, (int)$o2.value));
-					//
-				//}
-				//$result = result;
-				//}
-		//};
+opera returns [ASTNode node]: OPERA OPEN_PAR operator COMMA o1 = expression COMMA o2 = expression CLOSE_PAR 
+		{
+			$node = new Opera($operator.text, $o1.node, $o2.node);		
+		};
 
 var_assign returns [ASTNode node]:
 		LET ID ASSIGN expression SEMICOLON 
@@ -100,8 +81,8 @@ expression returns [ASTNode node]:
 		NUMBER {$node = new Constant(Integer.parseInt($NUMBER.text));}
 		| 
 		ID {$node = new VarRef($ID.text);}
-		//|
-		//opera {$value = $opera.result;}
+		|
+		opera {$node = $opera.node;}
 		| 
 		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));};
 		

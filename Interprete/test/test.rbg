@@ -1,17 +1,2 @@
-let holis = true;
-
-if holis {
-	let holis = false;
-	println!(13);
-	
-	if holis {
-		println!(1);
-	}
-	else {
-		println!(0);
-	}
-	
-}
-else {
-	println!(6789);	
-}
+let aaa = OPERA(+, OPERA(+, 5, 5), OPERA(+, 5, 5));
+println!(aaa);
