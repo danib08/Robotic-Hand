@@ -8,6 +8,8 @@ grammar RoboGrammar;
 	import com.robotichand.Interprete.ast.Constant;
 	import com.robotichand.Interprete.ast.IfCond;
 	import com.robotichand.Interprete.ast.PrintLn;
+	import com.robotichand.Interprete.ast.VarAssign;
+	import com.robotichand.Interprete.ast.VarRef;
 }
 
 @parser::members {
@@ -17,50 +19,19 @@ grammar RoboGrammar;
 
 program:{
 		List<ASTNode> body = new ArrayList<ASTNode>();
+		Map<String,Object> symbolTable = new HashMap<String,Object>();
 	}
-	(sentence {body.add($sentence.node);})*
+	(sentence {body.add($sentence.node);})*	
 	{
 		for(ASTNode n : body) {
-			n.execute();
+			n.execute(symbolTable);
 		} 		
 	};
-//program returns [ASTNode node]: (println | var_assign | conditional)*;
 
-sentence returns [ASTNode node]: println {$node = $println.node;} | conditional {$node = $conditional.node;};
-
-
-//sentence returns [ASTNode node]: println | var_assign;
-
-
-//var_assign returns [ASTNode node]: LET ID ASSIGN expression SEMICOLON
-//		{
-//			boolean var_exists = symbolTable.containsKey($ID.text);
-//			
-//			if ($expression.value == null){
-//				System.out.println($ID.text + " not defined");
-//			}
-//			else if (!var_exists) {
-//				symbolTable.put($ID.text, $expression.value);
-//			}
-//			else {
-//				 Object original_class = (symbolTable.get($ID.text)).getClass();
-//				
-//				if (($expression.value).getClass() == original_class) {
-//					symbolTable.put($ID.text, $expression.value);
-//				}
-//				else {
-//					String type;
-//					if (original_class == Boolean.class) {
-//						type = "boolean";
-//					}
-//					else {
-//						type = "integer";
-//					}
-//					System.out.println("Expected " + type + " type. Can't convert different types." );
-//				}
-//			}
-//		};
-
+sentence returns [ASTNode node]: println {$node = $println.node;} 
+				| conditional {$node = $conditional.node;}
+				| var_assign {$node = $var_assign.node;};
+				
 conditional returns [ASTNode node]: IF (c1 = condition) 
 			{
 				List<ASTNode> body = new ArrayList<ASTNode>();
@@ -113,13 +84,19 @@ println returns [ASTNode node]: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
 				//$result = result;
 				//}
 		//};
+
+var_assign returns [ASTNode node]:
+		LET ID ASSIGN expression SEMICOLON 
+		{$node = new VarAssign($ID.text, $expression.node);};
+		
+
 bool returns [ASTNode node]:
 		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));};
 		
 expression returns [ASTNode node]: 
 		NUMBER {$node = new Constant(Integer.parseInt($NUMBER.text));}
-		//| 
-		//ID {$value = symbolTable.get($ID.text);}
+		| 
+		ID {$node = new VarRef($ID.text);}
 		//|
 		//opera {$value = $opera.result;}
 		| 
