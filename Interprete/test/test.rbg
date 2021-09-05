@@ -1,6 +1,21 @@
-let aaAA = 3;
-let a = true;
-
-if true {
-	println!(aaAA);
+if false {
+	println!(13);
+	if false {
+		println!(3333);
+	}
+	else if true {
+		println!(8);
+		if false {
+			println!(344);
+		}
+		else {
+			println!(1);
+			if true {
+				println!(0);
+			}
+		}
+	}
+}
+else {
+	println!(6789);	
 }
