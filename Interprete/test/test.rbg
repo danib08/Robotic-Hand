@@ -1,2 +1,6 @@
-let aaaaaa = 4;
-println!(aa);
+let aaAA = 3;
+let a = true;
+
+if true {
+	println!(aaAA);
+}
