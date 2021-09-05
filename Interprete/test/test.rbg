@@ -1,4 +1,2 @@
-
-let a = true;
-let y = OPERA(+,2,a);
-println!(y);
+let aaa = OPERA(+, OPERA(+, 5, 5), OPERA(+, 5, 5));
+println!(aaa);
