@@ -1,10 +1,6 @@
-let a = 3;
+let aaAA = 3;
 let a = true;
 
-if false {
-	println!(a);
-}
-else {
-	let a = 5;
-	println!(a);
+if true {
+	println!(aaAA);
 }
