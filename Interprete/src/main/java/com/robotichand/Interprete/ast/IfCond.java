@@ -1,6 +1,7 @@
 package com.robotichand.Interprete.ast;
 
 import java.util.List;
+import java.util.Map;
 
 public class IfCond implements ASTNode {
 	private ASTNode condition;
@@ -19,18 +20,18 @@ public class IfCond implements ASTNode {
 	}
 
 	@Override
-	public Object execute() {
+	public Object execute(Map<String, Object> symbolTable) {
 		// TODO Auto-generated method stub
-		if ((boolean)condition.execute()) {
+		if ((boolean)condition.execute(symbolTable)) {
 			for (ASTNode n : body) {
-				n.execute();
+				n.execute(symbolTable);
 			}
 		}
 		else {
 			int cont = 0;
 			boolean cumple = false;
 			for (ASTNode c : elseIfConds) {
-				if ((boolean)c.execute()) {
+				if ((boolean)c.execute(symbolTable)) {
 					cumple = true;
 					break;
 				}
@@ -39,12 +40,12 @@ public class IfCond implements ASTNode {
 			if (cumple) {
 				List<ASTNode> elseIfBodyCumple = elseIfBodies.get(cont);
 				for (ASTNode n : elseIfBodyCumple) {
-					n.execute();
+					n.execute(symbolTable);
 				}
 			}
 			else {
 				for(ASTNode n : elseBody) {
-					n.execute();
+					n.execute(symbolTable);
 				}
 			}
 			

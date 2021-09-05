@@ -1,5 +1,7 @@
 package com.robotichand.Interprete.ast;
 
+import java.util.Map;
+
 public class PrintLn implements ASTNode {
 
 	private ASTNode data;
@@ -10,9 +12,9 @@ public class PrintLn implements ASTNode {
 	}
 
 	@Override
-	public Object execute() {
+	public Object execute(Map<String, Object> symbolTable) {
 		// TODO Auto-generated method stub
-		System.out.println(data.execute());
+		System.out.println(data.execute(symbolTable));
 		return null;
 	}
 
