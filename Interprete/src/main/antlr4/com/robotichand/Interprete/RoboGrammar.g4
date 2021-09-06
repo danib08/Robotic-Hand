@@ -11,6 +11,7 @@ grammar RoboGrammar;
 	import com.robotichand.Interprete.ast.VarAssign;
 	import com.robotichand.Interprete.ast.VarRef;
 	import com.robotichand.Interprete.ast.Opera;
+	import com.robotichand.Interprete.ast.Move;
 }
 
 @parser::members {
@@ -32,8 +33,15 @@ program:{
 sentence returns [ASTNode node]: println {$node = $println.node;} 
 				| conditional {$node = $conditional.node;}
 				| var_assign {$node = $var_assign.node;}
-				|opera {$node = $opera.node;};
+				| opera {$node = $opera.node;}
+				| move {$node = $move.node;};
 				
+move returns [ASTNode node]: MOVE OPEN_PAR STRING COMMA bool CLOSE_PAR SEMICOLON
+			{
+				$node = new Move($STRING.text, $bool.node);
+			};
+				
+
 conditional returns [ASTNode node]: IF (c1 = condition) 
 			{
 				List<ASTNode> body = new ArrayList<ASTNode>();
@@ -96,6 +104,7 @@ BOOLEAN: 'true' | 'false';
 IF: 'if';
 ELSE_IF: 'else if';
 ELSE: 'else';
+MOVE: 'Move';
 
 ASSIGN: '=';
 SEMICOLON: ';';
@@ -113,6 +122,8 @@ OPEN_BRAC: '{';
 CLOSE_BRAC: '}';
 
 NUMBER: [0-9]+;
+
+STRING : '"' .*? '"' ;
 
 ID: [a-zA-Z#_?][a-zA-Z0-9]*;
 

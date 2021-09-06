@@ -1,2 +1,5 @@
-let aaa = OPERA(+, OPERA(+, 5, 5), OPERA(+, 5, 5));
-println!(aaa);
+let caca = 5;
+
+if caca {
+	println!(3);
+}
