@@ -1,5 +1,1 @@
-let hola = 77;
-
-if hola {
-	println!(555);
-}
+Move("P",true);
