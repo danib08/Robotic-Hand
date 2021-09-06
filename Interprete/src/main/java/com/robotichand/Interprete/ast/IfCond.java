@@ -22,6 +22,10 @@ public class IfCond implements ASTNode {
 	@Override
 	public Object execute(Map<String, Object> symbolTable) {
 		// TODO Auto-generated method stub
+		if ((condition.execute(symbolTable)).getClass() != Boolean.class) {
+			System.out.println("The if condition must be a boolean");
+			return null;
+		}
 		if ((boolean)condition.execute(symbolTable)) {
 			for (ASTNode n : body) {
 				n.execute(symbolTable);
@@ -31,6 +35,10 @@ public class IfCond implements ASTNode {
 			int cont = 0;
 			boolean cumple = false;
 			for (ASTNode c : elseIfConds) {
+				if ((c.execute(symbolTable)).getClass() != Boolean.class) {
+					System.out.println("The else if condition must be a boolean");
+					return null;
+				}
 				if ((boolean)c.execute(symbolTable)) {
 					cumple = true;
 					break;

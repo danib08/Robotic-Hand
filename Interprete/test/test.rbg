@@ -1,5 +1,5 @@
-let caca = 5;
+let hola = 77;
 
-if caca {
-	println!(3);
+if hola {
+	println!(555);
 }
