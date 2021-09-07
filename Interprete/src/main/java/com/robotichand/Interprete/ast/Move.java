@@ -2,22 +2,23 @@ package com.robotichand.Interprete.ast;
 
 import java.util.Map;
 
+import com.robotichand.Arduino.Create;
+
 public class Move implements ASTNode {
 	
 	private String finger;
 	private ASTNode condition;
+	private Create create = new Create();
 	
 	public Move(String finger, ASTNode condition) {
 		super();
-		try {
-			this.finger = finger;
-			this.condition = condition;
-		}catch(NullPointerException e) {
-			System.out.println("The parameters must be String and Boolean");
-		}
+		this.finger = finger;
+		this.condition = condition;
+		create.conectar();
+		
 	}
 
-
+	
 	@Override
 	public Object execute(Map<String, Object> symbolTable) {
 		// TODO Auto-generated method stub
@@ -31,6 +32,7 @@ public class Move implements ASTNode {
 			if (finger.length() == 1 && finger.equals(finger.toUpperCase())) {
 				switch(finger) {
 					case "P":
+						create.elevar("P");
 						System.out.println("P");
 						break;
 					case "I":
