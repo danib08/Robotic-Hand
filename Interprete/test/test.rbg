@@ -1,6 +1,1 @@
-let aaAA = 3;
-let a = true;
-
-if true {
-	println!(aaAA);
-}
+Move("P",true);
