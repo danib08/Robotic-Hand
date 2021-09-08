@@ -28,19 +28,20 @@ public class Main {
 			System.out.println("\n");
 			
 			//Errors
-			CustomErrorListener errorListener = new CustomErrorListener(false);
-			parser.addErrorListener(errorListener);
+			//CustomErrorListener errorListener = new CustomErrorListener(false);
+			//parser.addErrorListener(errorListener);
 			
 			RoboGrammarParser.ProgramContext tree = parser.program();
 
 			RoboGrammarCustomVisitor visitor = new RoboGrammarCustomVisitor();
 			visitor.visit(tree);
 
-			ArrayList<String> errors = errorListener.getErrorMessages();
+			//ArrayList<String> errors = errorListener.getErrorMessages();
+			/*
 			for (String error : errors) {
 				System.out.println(error);
 			}
-			
+			*/
 			fis.close();
 			System.out.println("Interpretation finished");
 		} catch (IOException e) {

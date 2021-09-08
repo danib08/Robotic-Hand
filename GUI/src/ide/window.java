@@ -5,9 +5,6 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import javax.swing.BoxLayout;
-import javax.swing.JRadioButton;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JTextPane;
@@ -33,9 +30,9 @@ import java.nio.charset.Charset;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.PrintStream;
 
 import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -61,11 +58,12 @@ import java.awt.Font;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.ScrollPaneConstants;
 
 public class window {
 	
 	private JFrame frmRobotichandIde;
-	private JTextPane txtpnErrores;
+	private JTextArea txtpnErrores;
 	private JPanel panel;
 	private final Action openFile = new openFile();
 	private final Action action = new runAction();
@@ -77,6 +75,7 @@ public class window {
 	private File file;
 	private RSyntaxTextArea input;
     private RSyntaxTextArea output;
+    private PrintStream standardOut;
 
 
 
@@ -148,12 +147,13 @@ public class window {
 		frmRobotichandIde.setBounds(100, 100, 939, 624);
 		frmRobotichandIde.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		txtpnErrores = new JTextPane();
-		txtpnErrores.setForeground(Color.LIGHT_GRAY);
-		txtpnErrores.setBackground(Color.DARK_GRAY);
-		txtpnErrores.setBorder(new LineBorder(new Color(192, 192, 192), 2));
-		txtpnErrores.setEditable(false);
-		txtpnErrores.setText("Errores");
+		JPanel errorPanel = new JPanel();
+		
+		errorPanel.setBackground(Color.DARK_GRAY);
+		errorPanel.setLayout(new BorderLayout(0, 0));
+		
+		JScrollPane scrollpane = new JScrollPane(txtpnErrores);
+		errorPanel.add(scrollpane);
 		
 		panel = new JPanel();
 		panel.setBackground(Color.DARK_GRAY);
@@ -184,9 +184,7 @@ public class window {
 
 		tree.setBackground(Color.DARK_GRAY);
 		
-		
-		
-		
+	
 		GroupLayout groupLayout = new GroupLayout(frmRobotichandIde.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -197,30 +195,46 @@ public class window {
 					.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addGap(18)
 					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE)
+						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(btnNewButton_1_1, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)
+							.addComponent(btnNewButton_1_1, GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
 							.addGap(7)
-							.addComponent(btnNewButton_1, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE))
-						.addComponent(txtpnErrores, GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE))
+							.addComponent(btnNewButton_1, GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE))
+						.addComponent(errorPanel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addComponent(separator, GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
+				.addComponent(separator, GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addComponent(panel, GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE)
+					.addComponent(panel, GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnNewButton_1_1, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(txtpnErrores, GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+					.addComponent(errorPanel, GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
 					.addContainerGap())
 				.addGroup(groupLayout.createSequentialGroup()
-					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
+					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
 					.addContainerGap())
 		);
+		
+		txtpnErrores = new JTextArea();
+		errorPanel.add(txtpnErrores);
+		txtpnErrores.setForeground(Color.LIGHT_GRAY);
+		txtpnErrores.setBackground(Color.DARK_GRAY);
+		txtpnErrores.setBorder(new LineBorder(new Color(192, 192, 192), 2));
+		txtpnErrores.setEditable(false);
+		txtpnErrores.setText("Errores");
+		
+		PrintStream printStream = new PrintStream(new CustomOutputStream(txtpnErrores));
+		
+		// keeps reference of standard output stream
+        standardOut = System.out;
+		
+		System.setOut(printStream);
+		System.setErr(printStream);
 
 		frmRobotichandIde.getContentPane().setLayout(groupLayout);
 		
@@ -277,6 +291,7 @@ public class window {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			
 		}
 	}
 	

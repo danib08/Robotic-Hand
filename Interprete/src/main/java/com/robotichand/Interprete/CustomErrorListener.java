@@ -17,12 +17,13 @@ import org.antlr.v4.runtime.misc.Interval;
 
 public class CustomErrorListener extends DiagnosticErrorListener{
 	 private final Boolean captureDiagnostics;
+	 private final ArrayList<String> errorMessages = new ArrayList<String>();
+	 private final ArrayList<String> warningMessages = new ArrayList<String>();
 
 	 public CustomErrorListener(Boolean captureDiagnosticWarnings){
 		 captureDiagnostics = captureDiagnosticWarnings;
 	 }    
-    private final ArrayList<String> errorMessages = new ArrayList<String>();
-    private final ArrayList<String> warningMessages = new ArrayList<String>();
+    
 
     public ArrayList<String> getErrorMessages() {
 		return this.errorMessages;

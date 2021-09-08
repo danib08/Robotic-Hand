@@ -1,7 +1,16 @@
+a
+
 let aaa = OPERA(+, OPERA(+, 5, 5), OPERA(+, 5, 5));
 println!(aaa);
+println!(aaa);
+println!(aaa);
+println!(aaa);
+println!(aaa);
+println!(aaa);
+println!(aaa);
+println!(aaa);
 
-123
+
 
 
 a
