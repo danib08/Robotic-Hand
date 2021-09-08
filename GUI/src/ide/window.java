@@ -25,6 +25,8 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
+import com.robotichand.Interprete.Main;
+
 import org.apache.commons.io.FileUtils;
 import java.nio.charset.Charset;
 
@@ -232,13 +234,13 @@ public class window {
 		mntmNewMenuItem.setForeground(Color.LIGHT_GRAY);
 		mntmNewMenuItem.setBackground(Color.DARK_GRAY);
 		menuBar.add(mntmNewMenuItem);
-		
+		/**
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Guardar");
 		mntmNewMenuItem_1.setIcon(new ImageIcon(window.class.getResource("/icons/save.png")));
 		mntmNewMenuItem_1.setHorizontalAlignment(SwingConstants.CENTER);
 		mntmNewMenuItem_1.setForeground(Color.LIGHT_GRAY);
 		mntmNewMenuItem_1.setBackground(Color.DARK_GRAY);
-		menuBar.add(mntmNewMenuItem_1);
+		menuBar.add(mntmNewMenuItem_1);*/
 		
 		// Open file 
 		file = new File("../Interprete/test/test.rbg");
@@ -256,6 +258,7 @@ public class window {
 		}
 		public void actionPerformed(ActionEvent e) {
 			txtpnErrores.setText("Compilado y ejecutado");
+			
 		}
 	}
 	private class runAction extends AbstractAction {
@@ -266,7 +269,14 @@ public class window {
 			putValue( Action.SMALL_ICON, runIcon );
 		}
 		public void actionPerformed(ActionEvent e) {
-			txtpnErrores.setText("Compilado y ejecutado");
+			// txtpnErrores.setText("Compilado y ejecutado");
+			Main interprete = new Main();
+			try {
+				interprete.compile(file);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 	
