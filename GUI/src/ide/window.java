@@ -12,6 +12,7 @@ import java.awt.GridLayout;
 import javax.swing.JToolBar;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -59,6 +60,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.ScrollPaneConstants;
+import java.awt.event.ActionListener;
 
 public class window {
 	
@@ -76,7 +78,7 @@ public class window {
 	private RSyntaxTextArea input;
     private RSyntaxTextArea output;
     private PrintStream standardOut;
-
+    private final Action action_1 = new SwingAction();
 
 
 	/**
@@ -149,6 +151,7 @@ public class window {
 		
 		JPanel errorPanel = new JPanel();
 		
+		
 		errorPanel.setBackground(Color.DARK_GRAY);
 		errorPanel.setLayout(new BorderLayout(0, 0));
 		
@@ -156,7 +159,12 @@ public class window {
 		errorPanel.add(scrollpane);
 		
 		panel = new JPanel();
+		
+		
+		
 		panel.setBackground(Color.DARK_GRAY);
+		
+		
 		
 		JButton btnNewButton_1 = new JButton("Compilar y ejecutar");
 		btnNewButton_1.setForeground(Color.WHITE);
@@ -167,6 +175,12 @@ public class window {
 		btnNewButton_1_1.setForeground(Color.WHITE);
 		btnNewButton_1_1.setBackground(Color.DARK_GRAY);
 		btnNewButton_1_1.setAction(compile);
+
+		
+
+		
+		
+		
 		
 		JSeparator separator = new JSeparator();
 		separator.setOrientation(SwingConstants.VERTICAL);
@@ -195,11 +209,11 @@ public class window {
 					.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addGap(18)
 					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
+						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(btnNewButton_1_1, GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+							.addComponent(btnNewButton_1_1, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
 							.addGap(7)
-							.addComponent(btnNewButton_1, GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE))
+							.addComponent(btnNewButton_1, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE))
 						.addComponent(errorPanel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE))
 					.addContainerGap())
 		);
@@ -216,8 +230,8 @@ public class window {
 					.addComponent(errorPanel, GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
 					.addContainerGap())
 				.addGroup(groupLayout.createSequentialGroup()
-					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
-					.addContainerGap())
+					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE)
+					.addGap(175))
 		);
 		
 		txtpnErrores = new JTextArea();
@@ -248,6 +262,15 @@ public class window {
 		mntmNewMenuItem.setForeground(Color.LIGHT_GRAY);
 		mntmNewMenuItem.setBackground(Color.DARK_GRAY);
 		menuBar.add(mntmNewMenuItem);
+		
+		JButton connectButton = new JButton("Connect");
+		connectButton.setForeground(Color.WHITE);
+		connectButton.setBackground(Color.DARK_GRAY);
+		menuBar.add(connectButton);
+		
+		JComboBox portsList = new JComboBox();
+		portsList.setBackground(Color.DARK_GRAY);
+		menuBar.add(portsList);
 		/**
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Guardar");
 		mntmNewMenuItem_1.setIcon(new ImageIcon(window.class.getResource("/icons/save.png")));
@@ -335,6 +358,20 @@ public class window {
                 } catch (Exception e1) {
                 }
             }
+		}
+	}
+	private void connectButtonActionPerformed(java.awt.event.ActionEvent evt) {                                              
+        // TODO add your handling code here:
+    } 
+	private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
+        // TODO add your handling code here:
+    }
+	private class SwingAction extends AbstractAction {
+		public SwingAction() {
+			putValue(NAME, "SwingAction");
+			putValue(SHORT_DESCRIPTION, "Some short description");
+		}
+		public void actionPerformed(ActionEvent e) {
 		}
 	}
 }
