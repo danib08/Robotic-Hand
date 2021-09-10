@@ -1,29 +1,54 @@
 
 package com.robotichand.Interprete;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-import org.antlr.v4.runtime.ANTLRFileStream;
+import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
 public class Main {
 
 	private static final String EXTENSION = "rbg";
 
-	public static void main(String[] args) throws IOException {
-		String program = args.length > 1 ? args[1] : "test/test." + EXTENSION;
+	public void compile(File program) throws IOException {
 
-		System.out.println("Interpreting file " + program);
+		FileInputStream fis;
+		
+		try {
+			fis = new FileInputStream(program);
+			ANTLRInputStream input = new ANTLRInputStream(fis);
+			System.out.println("Interpreting file " + program.getAbsolutePath());
+			RoboGrammarLexer lexer = new RoboGrammarLexer(input);
+			CommonTokenStream tokens = new CommonTokenStream(lexer);
+			RoboGrammarParser parser = new RoboGrammarParser(tokens);
 
-		RoboGrammarLexer lexer = new RoboGrammarLexer(new ANTLRFileStream(program));
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		RoboGrammarParser parser = new RoboGrammarParser(tokens);
+			System.out.println("\n");
+			
+			//Errors
+			//CustomErrorListener errorListener = new CustomErrorListener(false);
+			//parser.addErrorListener(errorListener);
+			
+			RoboGrammarParser.ProgramContext tree = parser.program();
 
-		RoboGrammarParser.ProgramContext tree = parser.program();
+			RoboGrammarCustomVisitor visitor = new RoboGrammarCustomVisitor();
+			visitor.visit(tree);
 
-		RoboGrammarCustomVisitor visitor = new RoboGrammarCustomVisitor();
-		visitor.visit(tree);
-
-		System.out.println("Interpretation finished");
+			//ArrayList<String> errors = errorListener.getErrorMessages();
+			/*
+			for (String error : errors) {
+				System.out.println(error);
+			}
+			*/
+			fis.close();
+			System.out.println("Interpretation finished");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
 
 	}
 
