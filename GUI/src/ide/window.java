@@ -226,7 +226,6 @@ public class window {
 		txtpnErrores.setBackground(Color.DARK_GRAY);
 		txtpnErrores.setBorder(new LineBorder(new Color(192, 192, 192), 2));
 		txtpnErrores.setEditable(false);
-		txtpnErrores.setText("Errores");
 		
 		PrintStream printStream = new PrintStream(new CustomOutputStream(txtpnErrores));
 		

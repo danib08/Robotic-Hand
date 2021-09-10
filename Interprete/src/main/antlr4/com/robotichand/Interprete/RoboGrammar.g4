@@ -7,6 +7,7 @@ grammar RoboGrammar;
 	import com.robotichand.Interprete.ast.ASTNode;
 	import com.robotichand.Interprete.ast.Constant;
 	import com.robotichand.Interprete.ast.IfCond;
+	import com.robotichand.Interprete.ast.LogicCond;
 	import com.robotichand.Interprete.ast.PrintLn;
 	import com.robotichand.Interprete.ast.VarAssign;
 	import com.robotichand.Interprete.ast.VarRef;
@@ -54,7 +55,11 @@ conditional returns [ASTNode node]: IF (c1 = condition)
 			};
 			
 
-condition returns [ASTNode node]: bool {$node = $bool.node;};
+condition returns [ASTNode node]: bool {$node = $bool.node;}
+				| (o1 = bool) logic (o2 = bool) 
+				{
+					$node = new LogicCond($o1.node, $logic.text, $o2.node);
+				};
 
 println returns [ASTNode node]: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
 		{
@@ -88,6 +93,8 @@ expression returns [ASTNode node]:
 		
 operator: SUM | MINUS | MULT | DIV | EXP;
 
+logic: AND | OR;
+
 
 PRINTLN: 'println!';
 LET: 'let';
@@ -106,6 +113,9 @@ MINUS: '-';
 MULT: '*';
 DIV: '/';
 EXP: '**';
+
+AND: '&&';
+OR: '||';
 
 OPEN_PAR: '(';
 CLOSE_PAR: ')';

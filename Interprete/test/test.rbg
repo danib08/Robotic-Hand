@@ -1,18 +1,11 @@
-a
+
 
 let aaa = OPERA(+, OPERA(+, 5, 5), OPERA(+, 5, 5));
-println!(aaa);
-println!(aaa);
-println!(aaa);
-println!(aaa);
-println!(aaa);
-println!(aaa);
-println!(aaa);
-println!(aaa);
+let beeb = true;
+let squeeb = true;
+if beeb || squeeb {
+	println!(aaa);
+	}
 
 
 
-
-a
-a
-aasasdasdascascas
