@@ -1,9 +1,9 @@
 
 
 let aaa = OPERA(+, OPERA(+, 5, 5), OPERA(+, 5, 5));
-let beeb = true;
-let squeeb = true;
-if beeb || squeeb {
+let beeb = 6;
+let squeeb = 6;
+if beeb <= squeeb {
 	println!(aaa);
 	}
 
