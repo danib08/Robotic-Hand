@@ -36,8 +36,8 @@ sentence returns [ASTNode node]: println {$node = $println.node;}
 				| conditional {$node = $conditional.node;}
 				| var_assign {$node = $var_assign.node;}
 				| opera {$node = $opera.node;}
-				| for_loop {$node = $for_loop.node;};
-				//| while {$node = $while.node;};
+				| for_loop {$node = $for_loop.node;}
+				| while_loop {$node = $while_loop.node;};
 				
 conditional returns [ASTNode node]: IF (c1 = condition) 
 			{
@@ -93,8 +93,17 @@ for_loop returns [ASTNode node]: FOR initialExpression = expression IN startRang
 				
 				$node = new ForLoop($initialExpression.node, $startRange.node, $range.text, $endRange.node, body);
 			};
-
-//while returns [ASTNode node]: WHILE OPEN_PAR bool | (exp1 = expression algorithmic exp2 = num) CLOSE_PAR;
+			
+while_loop returns [ASTNode node]: WHILE OPEN_PAR bool | ((exp1 = expression) algorithmic (exp2 = num)) CLOSE_PAR
+			{
+				List<ASTNode> body = new ArrayList<ASTNode>();
+				
+			}
+			OPEN_BRAC (sc = sentence {body.add($sc.node);})* CLOSE_BRAC
+			{
+				$node = new While($exp1.node, $algorithmic.text, $exp2.node, body);
+			};
+			
 			
 bool returns [ASTNode node]:
 		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));}
