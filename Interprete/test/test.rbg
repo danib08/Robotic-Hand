@@ -11,5 +11,6 @@ if beeb <= squeeb {
 for cifra in 1..=11{
 
 	println!(aaa);
+
 }
 

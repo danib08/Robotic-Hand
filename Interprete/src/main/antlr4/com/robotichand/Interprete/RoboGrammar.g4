@@ -13,6 +13,7 @@ grammar RoboGrammar;
 	import com.robotichand.Interprete.ast.VarRef;
 	import com.robotichand.Interprete.ast.Opera;
 	import com.robotichand.Interprete.ast.ForLoop;
+	import com.robotichand.Interprete.ast.While;
 }
 
 @parser::members {
@@ -36,6 +37,7 @@ sentence returns [ASTNode node]: println {$node = $println.node;}
 				| var_assign {$node = $var_assign.node;}
 				| opera {$node = $opera.node;}
 				| for_loop {$node = $for_loop.node;};
+				//| while {$node = $while.node;};
 				
 conditional returns [ASTNode node]: IF (c1 = condition) 
 			{
@@ -88,8 +90,11 @@ for_loop returns [ASTNode node]: FOR initialExpression = expression IN startRang
 			}
 			OPEN_BRAC (sc = sentence {body.add($sc.node);})* CLOSE_BRAC
 			{
+				
 				$node = new ForLoop($initialExpression.node, $startRange.node, $range.text, $endRange.node, body);
 			};
+
+//while returns [ASTNode node]: WHILE OPEN_PAR bool | (exp1 = expression algorithmic exp2 = num) CLOSE_PAR;
 			
 bool returns [ASTNode node]:
 		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));}
@@ -114,11 +119,12 @@ num returns [ASTNode node]:
 		opera {$node = $opera.node;};
 		
 operator: SUM | MINUS | MULT | DIV | EXP;
+
 range: RANGE | RANGE_END;
 
 logic: AND | OR;
 
-algorithmic: LESS | GREATER | LESSEQUALS | GREATEREQUALS | EQUALS; 
+algorithmic: LESS | GREATER | LESSEQUALS | GREATEREQUALS | EQUALS | DIFFERENT; 
 
 
 PRINTLN: 'println!';
@@ -152,6 +158,7 @@ GREATER: '>';
 LESSEQUALS: '<=';
 GREATEREQUALS: '>=';
 EQUALS: '==';
+DIFFERENT: '<>';
  
 OPEN_PAR: '(';
 CLOSE_PAR: ')';

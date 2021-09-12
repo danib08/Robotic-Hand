@@ -28,7 +28,7 @@ public class ForLoop implements ASTNode{
 		
 		if(range.equals("..")){
 			for(int i = start; i < end; i++) {
-				index = i;
+				//index = i;
 				for (ASTNode n : body) {
 					n.execute(symbolTable);
 				}
@@ -37,10 +37,11 @@ public class ForLoop implements ASTNode{
 		
 		else if(range.equals("..=")){
 			for(int i = start; i <= end; i++) {
-				index = i;
+				
 				for (ASTNode n : body) {
 					n.execute(symbolTable);
 				}
+				//index = i;
 			}		
 		}
 		return index;
