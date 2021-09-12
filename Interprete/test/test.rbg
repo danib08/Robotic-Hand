@@ -1,18 +1,9 @@
-a
 
 let aaa = OPERA(+, OPERA(+, 5, 5), OPERA(+, 5, 5));
-println!(aaa);
-println!(aaa);
-println!(aaa);
-println!(aaa);
-println!(aaa);
-println!(aaa);
-println!(aaa);
-println!(aaa);
 
 
+for cifra in 1..=11{
 
+	println!(aaa);
+}
 
-a
-a
-aasasdasdascascas

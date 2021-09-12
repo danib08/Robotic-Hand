@@ -11,6 +11,7 @@ grammar RoboGrammar;
 	import com.robotichand.Interprete.ast.VarAssign;
 	import com.robotichand.Interprete.ast.VarRef;
 	import com.robotichand.Interprete.ast.Opera;
+	import com.robotichand.Interprete.ast.ForLoop;
 }
 
 @parser::members {
@@ -32,7 +33,8 @@ program:{
 sentence returns [ASTNode node]: println {$node = $println.node;} 
 				| conditional {$node = $conditional.node;}
 				| var_assign {$node = $var_assign.node;}
-				|opera {$node = $opera.node;};
+				| opera {$node = $opera.node;}
+				| for_loop {$node = $for_loop.node;};
 				
 conditional returns [ASTNode node]: IF (c1 = condition) 
 			{
@@ -69,8 +71,17 @@ opera returns [ASTNode node]: OPERA OPEN_PAR operator COMMA o1 = expression COMM
 var_assign returns [ASTNode node]:
 		LET ID ASSIGN expression SEMICOLON 
 		{$node = new VarAssign($ID.text, $expression.node);};
-		
 
+for_loop returns [ASTNode node]: FOR initialExpression = expression IN startRange = expression range endRange = expression
+			{
+				List<ASTNode> body = new ArrayList<ASTNode>();
+				
+			}
+			OPEN_BRAC (sc = sentence {body.add($sc.node);})* CLOSE_BRAC
+			{
+				$node = new ForLoop($initialExpression.node, $startRange.node, $range.text, $endRange.node, body);
+			};
+			
 bool returns [ASTNode node]:
 		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));}
 		|
@@ -87,6 +98,7 @@ expression returns [ASTNode node]:
 		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));};
 		
 operator: SUM | MINUS | MULT | DIV | EXP;
+range: RANGE | RANGE_END;
 
 
 PRINTLN: 'println!';
@@ -96,10 +108,15 @@ BOOLEAN: 'true' | 'false';
 IF: 'if';
 ELSE_IF: 'else if';
 ELSE: 'else';
+FOR: 'for';
+IN: 'in';
+WHILE: 'while';
 
 ASSIGN: '=';
 SEMICOLON: ';';
 COMMA: ',';
+RANGE: '..';
+RANGE_END: '..=';
 
 SUM: '+';
 MINUS: '-';
