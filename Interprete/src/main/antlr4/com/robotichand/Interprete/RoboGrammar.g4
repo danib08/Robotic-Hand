@@ -7,6 +7,7 @@ grammar RoboGrammar;
 	import com.robotichand.Interprete.ast.ASTNode;
 	import com.robotichand.Interprete.ast.Constant;
 	import com.robotichand.Interprete.ast.IfCond;
+	import com.robotichand.Interprete.ast.Compare;
 	import com.robotichand.Interprete.ast.PrintLn;
 	import com.robotichand.Interprete.ast.VarAssign;
 	import com.robotichand.Interprete.ast.VarRef;
@@ -56,14 +57,22 @@ conditional returns [ASTNode node]: IF (c1 = condition)
 			};
 			
 
-condition returns [ASTNode node]: bool {$node = $bool.node;};
+condition returns [ASTNode node]: bool {$node = $bool.node;}
+				| (o1 = bool) logic (o2 = bool) 
+				{
+					$node = new Compare($o1.node, $logic.text, $o2.node);
+				}
+				| (n1 = num) algorithmic (n2 = num)
+				{
+					$node = new Compare($n1.node, $algorithmic.text, $n2.node);
+				};
 
 println returns [ASTNode node]: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
 		{
 			$node = new PrintLn($expression.node);
 		};
 
-opera returns [ASTNode node]: OPERA OPEN_PAR operator COMMA o1 = expression COMMA o2 = expression CLOSE_PAR 
+opera returns [ASTNode node]: OPERA OPEN_PAR operator COMMA o1 = num COMMA o2 = num CLOSE_PAR 
 		{
 			$node = new Opera($operator.text, $o1.node, $o2.node);		
 		};
@@ -97,8 +106,19 @@ expression returns [ASTNode node]:
 		| 
 		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));};
 		
+num returns [ASTNode node]:
+		NUMBER {$node = new Constant(Integer.parseInt($NUMBER.text));}
+		| 
+		ID {$node = new VarRef($ID.text);}
+		|
+		opera {$node = $opera.node;};
+		
 operator: SUM | MINUS | MULT | DIV | EXP;
 range: RANGE | RANGE_END;
+
+logic: AND | OR;
+
+algorithmic: LESS | GREATER | LESSEQUALS | GREATEREQUALS | EQUALS; 
 
 
 PRINTLN: 'println!';
@@ -124,6 +144,15 @@ MULT: '*';
 DIV: '/';
 EXP: '**';
 
+AND: '&&';
+OR: '||';
+
+LESS: '<';
+GREATER: '>';
+LESSEQUALS: '<=';
+GREATEREQUALS: '>=';
+EQUALS: '==';
+ 
 OPEN_PAR: '(';
 CLOSE_PAR: ')';
 OPEN_BRAC: '{';
