@@ -9,7 +9,6 @@ public class ForLoop implements ASTNode{
 	private ASTNode startRange;
 	private ASTNode endRange;
 	private List<ASTNode> body;
-	private int index;
 	
 	public ForLoop(String name, ASTNode startRange, String range, ASTNode endRange, List<ASTNode> body){
 		super();
@@ -47,7 +46,7 @@ public class ForLoop implements ASTNode{
 				}
 			}		
 		}
-		symbolTable.put(name, null);
+		//symbolTable.clear();
 		return null;
 	
 	}

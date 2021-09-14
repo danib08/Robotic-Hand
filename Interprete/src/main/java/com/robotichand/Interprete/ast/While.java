@@ -29,7 +29,6 @@ public class While implements ASTNode{
 			while(start < end) {
 				for (ASTNode n : body) {
 					n.execute(symbolTable);
-					//symbolTable.
 				}
 				start++;
 			}
