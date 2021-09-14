@@ -3,10 +3,7 @@
 let aaa = OPERA(+, OPERA(+, 5, 5), OPERA(+, 5, 5));
 let beeb = 1;
 let squeeb = 6;
-while (beeb <= squeeb) {
-	println!(aaa);
+for cifra in 1..11 {
+	println!(cifra);
 	}
-
-
-
-
+	

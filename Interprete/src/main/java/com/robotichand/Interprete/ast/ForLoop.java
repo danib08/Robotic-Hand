@@ -4,16 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 public class ForLoop implements ASTNode{
-	private ASTNode initialExpression;
+	private String name;
 	private String range;
 	private ASTNode startRange;
 	private ASTNode endRange;
 	private List<ASTNode> body;
 	private int index;
 	
-	public ForLoop(ASTNode initialExpression, ASTNode startRange, String range, ASTNode endRange, List<ASTNode> body){
+	public ForLoop(String name, ASTNode startRange, String range, ASTNode endRange, List<ASTNode> body){
 		super();
-		this.initialExpression = initialExpression;
+		this.name = name;
 		this.startRange = startRange;
 		this.range = range;
 		this.endRange = endRange;
@@ -25,12 +25,14 @@ public class ForLoop implements ASTNode{
 		// TODO Auto-generated method stub
 		int start = (int) startRange.execute(symbolTable);
 		int end = (int) endRange.execute(symbolTable);
-		
+		int cont = start;
+		symbolTable.put(name, start);
 		if(range.equals("..")){
 			for(int i = start; i < end; i++) {
-				//index = i;
 				for (ASTNode n : body) {
+					cont++;
 					n.execute(symbolTable);
+					symbolTable.put(name, cont);
 				}
 			}		
 		}
@@ -39,9 +41,10 @@ public class ForLoop implements ASTNode{
 			for(int i = start; i <= end; i++) {
 				
 				for (ASTNode n : body) {
+					cont++;
 					n.execute(symbolTable);
+					symbolTable.put(name, cont);
 				}
-				//index = i;
 			}		
 		}
 		return index;

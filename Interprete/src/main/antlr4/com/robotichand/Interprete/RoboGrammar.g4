@@ -83,7 +83,7 @@ var_assign returns [ASTNode node]:
 		LET ID ASSIGN expression SEMICOLON 
 		{$node = new VarAssign($ID.text, $expression.node);};
 
-for_loop returns [ASTNode node]: FOR initialExpression = expression IN startRange = expression range endRange = expression
+for_loop returns [ASTNode node]: FOR ID IN startRange = expression range endRange = expression
 			{
 				List<ASTNode> body = new ArrayList<ASTNode>();
 				
@@ -91,10 +91,10 @@ for_loop returns [ASTNode node]: FOR initialExpression = expression IN startRang
 			OPEN_BRAC (sc = sentence {body.add($sc.node);})* CLOSE_BRAC
 			{
 				
-				$node = new ForLoop($initialExpression.node, $startRange.node, $range.text, $endRange.node, body);
+				$node = new ForLoop($ID.text, $startRange.node, $range.text, $endRange.node, body);
 			};
 			
-while_loop returns [ASTNode node]: WHILE OPEN_PAR bool | ((exp1 = expression) algorithmic (exp2 = num)) CLOSE_PAR
+while_loop returns [ASTNode node]: WHILE OPEN_PAR ((exp1 = expression) algorithmic (exp2 = num)) CLOSE_PAR
 			{
 				List<ASTNode> body = new ArrayList<ASTNode>();
 				
