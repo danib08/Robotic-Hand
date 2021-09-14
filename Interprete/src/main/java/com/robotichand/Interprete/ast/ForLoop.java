@@ -47,7 +47,8 @@ public class ForLoop implements ASTNode{
 				}
 			}		
 		}
-		return index;
+		symbolTable.put(name, null);
+		return null;
 	
 	}
 }
