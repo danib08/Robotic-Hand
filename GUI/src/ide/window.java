@@ -25,9 +25,13 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 
 import com.robotichand.Interprete.Main;
 
+import panamahitek.Arduino.PanamaHitek_Arduino;
+
 import org.apache.commons.io.FileUtils;
 import java.nio.charset.Charset;
-
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -79,7 +83,10 @@ public class window {
     private RSyntaxTextArea output;
     private PrintStream standardOut;
     private final Action action_1 = new SwingAction();
-
+    private JComboBox portsList;
+    private JButton connectButton;
+    PanamaHitek_Arduino Arduino = new PanamaHitek_Arduino();
+    
 
 	/**
 	 * Launch the application.
@@ -90,11 +97,13 @@ public class window {
 				try {
 					window window = new window();
 					window.frmRobotichandIde.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
+		
 		
 	}
 
@@ -263,14 +272,23 @@ public class window {
 		mntmNewMenuItem.setBackground(Color.DARK_GRAY);
 		menuBar.add(mntmNewMenuItem);
 		
-		JButton connectButton = new JButton("Connect");
+		connectButton = new JButton("Connect");
 		connectButton.setForeground(Color.WHITE);
-		connectButton.setBackground(Color.DARK_GRAY);
+		connectButton.setBackground(Color.BLACK);
 		menuBar.add(connectButton);
+		connectButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonConectarActionPerformed(evt);
+            }
+        });
 		
-		JComboBox portsList = new JComboBox();
+		
+		
+		portsList = new JComboBox();
 		portsList.setBackground(Color.DARK_GRAY);
 		menuBar.add(portsList);
+
+           
 		/**
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Guardar");
 		mntmNewMenuItem_1.setIcon(new ImageIcon(window.class.getResource("/icons/save.png")));
@@ -283,6 +301,7 @@ public class window {
 		file = new File("../Interprete/test/test.rbg");
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(null, "txt", "rbg");
 		fileChooser.setFileFilter(filter);
+		getPorts();
 	}
 	
 	// Button actions 
@@ -360,12 +379,7 @@ public class window {
             }
 		}
 	}
-	private void connectButtonActionPerformed(java.awt.event.ActionEvent evt) {                                              
-        // TODO add your handling code here:
-    } 
-	private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
-        // TODO add your handling code here:
-    }
+
 	private class SwingAction extends AbstractAction {
 		public SwingAction() {
 			putValue(NAME, "SwingAction");
@@ -374,4 +388,47 @@ public class window {
 		public void actionPerformed(ActionEvent e) {
 		}
 	}
+	
+	public void getPorts() {
+        portsList.removeAllItems();
+        if (Arduino.getPortsAvailable() > 0) {
+            List lst = Arduino.getSerialPorts();
+            for(int i=0; i<lst.size(); i++){
+            	portsList.addItem(lst.get(i));
+            }
+            //Arduino.getSerialPorts().forEach(i -> jComboBoxPorts.addItem(i));
+            connectButton.setEnabled(true);
+            connectButton.setBackground(new Color(255, 255, 255));
+        } else {
+        	connectButton.setEnabled(false);
+        	connectButton.setBackground(new Color(204, 204, 204));
+        }
+
+    }
+	private void jButtonConectarActionPerformed(java.awt.event.ActionEvent evt) {                                                
+
+        if (connectButton.getText().equals("Desconectar")) {
+            try {
+                Arduino.killArduinoConnection();
+                connectButton.setText("Conectar");
+               // c.disableButton(jButtonApagar);
+                //c.disableButton(jButtonEncender);
+               // c.enableConnectionPanel(jButtonRefresh, jComboBoxPorts);
+            } catch (Exception ex) {
+                Logger.getLogger(window.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        } else {
+
+            try {
+                Arduino.arduinoTX(portsList.getSelectedItem().toString(), 9600);
+                connectButton.setText("Desconectar");
+                //c.enableButton(jButtonEncender);
+                //c.disableButton(jButtonApagar);
+                //c.disableConnectionPanel(jButtonRefresh, jComboBoxPorts);
+            } catch (Exception ex) {
+                Logger.getLogger(window.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }         
 }
