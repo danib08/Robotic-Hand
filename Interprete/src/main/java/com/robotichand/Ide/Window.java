@@ -38,36 +38,26 @@ import java.io.FileReader;
 import java.io.PrintStream;
 
 import javax.swing.JMenuItem;
-import java.awt.Component;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.Color;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.ImageIcon;
-import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.Font;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.ScrollPaneConstants;
-import java.awt.event.ActionListener;
 
 public class Window {
 	
+
 	private JFrame frmRobotichandIde;
 	private JTextArea txtpnErrores;
 	private JPanel panel;
@@ -85,37 +75,20 @@ public class Window {
     private final Action action_1 = new SwingAction();
     private JComboBox portsList;
     private JButton connectButton;
-    PanamaHitek_Arduino Arduino = new PanamaHitek_Arduino();
+    private PanamaHitek_Arduino arduino;
     
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Window window = new Window();
-					window.frmRobotichandIde.setVisible(true);
-					
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		
-		
-	}
-
-	/**
-	 * Create the application.
+    /**
+	 * Constructor
 	 * @throws IOException 
 	 */
-	public Window() throws IOException{
+	public Window(PanamaHitek_Arduino arduino) throws IOException {
+		this.arduino = arduino;
 		initialize();
 		RSyntax();
+		frmRobotichandIde.setVisible(true);
 	}
+
 	/**
 	 * Shows code lines in the text area
 	 * @throws IOException 
@@ -386,8 +359,8 @@ public class Window {
 	
 	public void getPorts() {
         portsList.removeAllItems();
-        if (Arduino.getPortsAvailable() > 0) {
-            List lst = Arduino.getSerialPorts();
+        if (arduino.getPortsAvailable() > 0) {
+            List lst = arduino.getSerialPorts();
             for(int i=0; i<lst.size(); i++){
             	portsList.addItem(lst.get(i));
             }
@@ -404,7 +377,7 @@ public class Window {
 
         if (connectButton.getText().equals("Desconectar")) {
             try {
-                Arduino.killArduinoConnection();
+                arduino.killArduinoConnection();
                 connectButton.setText("Conectar");
                // c.disableButton(jButtonApagar);
                 //c.disableButton(jButtonEncender);
@@ -416,7 +389,7 @@ public class Window {
         } else {
 
             try {
-                Arduino.arduinoTX(portsList.getSelectedItem().toString(), 9600);
+                arduino.arduinoTX(portsList.getSelectedItem().toString(), 9600);
                 connectButton.setText("Desconectar");
                 //c.enableButton(jButtonEncender);
                 //c.disableButton(jButtonApagar);
