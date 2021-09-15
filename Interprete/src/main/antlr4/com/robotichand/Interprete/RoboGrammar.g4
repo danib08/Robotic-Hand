@@ -11,9 +11,7 @@ grammar RoboGrammar;
 	import com.robotichand.Interprete.ast.VarAssign;
 	import com.robotichand.Interprete.ast.VarRef;
 	import com.robotichand.Interprete.ast.Opera;
-	import com.robotichand.Interprete.ast.Move;
-	import com.robotichand.Arduino.Create;
-	
+	import com.robotichand.Interprete.ast.Move;	
 }
 
 @parser::members {

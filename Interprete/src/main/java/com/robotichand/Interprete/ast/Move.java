@@ -2,20 +2,15 @@ package com.robotichand.Interprete.ast;
 
 import java.util.Map;
 
-import com.robotichand.Arduino.Create;
-
 public class Move implements ASTNode {
 	
 	private String finger;
 	private ASTNode condition;
-	private Create create = new Create();
 	
 	public Move(String finger, ASTNode condition) {
 		super();
 		this.finger = finger;
-		this.condition = condition;
-		create.conectar();
-		
+		this.condition = condition;		
 	}
 
 	
@@ -32,7 +27,6 @@ public class Move implements ASTNode {
 			if (finger.length() == 1 && finger.equals(finger.toUpperCase())) {
 				switch(finger) {
 					case "P":
-						create.elevar("P");
 						System.out.println("P");
 						break;
 					case "I":

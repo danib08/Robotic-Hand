@@ -1,4 +1,4 @@
-package ide;
+package com.robotichand.Ide;
 
 import java.awt.EventQueue;
 
@@ -66,7 +66,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.ScrollPaneConstants;
 import java.awt.event.ActionListener;
 
-public class window {
+public class Window {
 	
 	private JFrame frmRobotichandIde;
 	private JTextArea txtpnErrores;
@@ -95,8 +95,9 @@ public class window {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					window window = new window();
+					Window window = new Window();
 					window.frmRobotichandIde.setVisible(true);
+					
 					
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -111,7 +112,7 @@ public class window {
 	 * Create the application.
 	 * @throws IOException 
 	 */
-	public window() throws IOException{
+	public Window() throws IOException{
 		initialize();
 		RSyntax();
 	}
@@ -151,7 +152,7 @@ public class window {
 		frmRobotichandIde = new JFrame();
 		frmRobotichandIde.setFont(new Font("Dialog", Font.PLAIN, 13));
 		frmRobotichandIde.setForeground(Color.BLACK);
-		frmRobotichandIde.setIconImage(Toolkit.getDefaultToolkit().getImage(window.class.getResource("/icons/robotic-hand.png")));
+		//frmRobotichandIde.setIconImage(Toolkit.getDefaultToolkit().getImage(Window.class.getResource("/icons/robotic-hand.png")));
 		frmRobotichandIde.getContentPane().setBackground(Color.DARK_GRAY);
 		frmRobotichandIde.setBackground(Color.DARK_GRAY);
 		frmRobotichandIde.setTitle("RoboticHand IDE");
@@ -185,12 +186,6 @@ public class window {
 		btnNewButton_1_1.setBackground(Color.DARK_GRAY);
 		btnNewButton_1_1.setAction(compile);
 
-		
-
-		
-		
-		
-		
 		JSeparator separator = new JSeparator();
 		separator.setOrientation(SwingConstants.VERTICAL);
 		separator.setBackground(Color.LIGHT_GRAY);
@@ -306,11 +301,11 @@ public class window {
 	
 	// Button actions 
 	private class compileAction extends AbstractAction {
-		Icon runIcon = new ImageIcon(window.class.getResource("/icons/search.png"));
+		//Icon runIcon = new ImageIcon(Window.class.getResource("/icons/search.png"));
 		public compileAction() {
 			putValue(NAME, "Compilar");
 			putValue(SHORT_DESCRIPTION, "Compila el programa");
-			putValue( Action.SMALL_ICON, runIcon );
+			//putValue( Action.SMALL_ICON, runIcon );
 		}
 		public void actionPerformed(ActionEvent e) {
 			txtpnErrores.setText("Compilado y ejecutado");
@@ -318,11 +313,11 @@ public class window {
 		}
 	}
 	private class runAction extends AbstractAction {
-		Icon runIcon = new ImageIcon(window.class.getResource("/icons/run.png"));
+		//Icon runIcon = new ImageIcon(Window.class.getResource("/icons/run.png"));
 		public runAction() {
 			putValue(NAME, "Compilar y ejecutar");
 			putValue(SHORT_DESCRIPTION, "Compila y ejecuta el programa");
-			putValue( Action.SMALL_ICON, runIcon );
+			//putValue( Action.SMALL_ICON, runIcon );
 		}
 		public void actionPerformed(ActionEvent e) {
 			// txtpnErrores.setText("Compilado y ejecutado");
@@ -339,11 +334,11 @@ public class window {
 	
 	// Open file action
 	private class openFile extends AbstractAction {
-		Icon openIcon = new ImageIcon(window.class.getResource("/icons/open.png"));
+		//Icon openIcon = new ImageIcon(Window.class.getResource("/icons/open.png"));
 		public openFile() {
 			putValue(NAME, "Abrir archivo");
 			putValue(SHORT_DESCRIPTION, "Abre un archivo");
-			putValue( Action.SMALL_ICON, openIcon );
+			//putValue( Action.SMALL_ICON, openIcon );
 		}
 		public void actionPerformed(ActionEvent e) {
 			int result = fileChooser.showOpenDialog(frmRobotichandIde);
@@ -361,7 +356,7 @@ public class window {
 	
 	// Save file action
 	private class saveFile extends AbstractAction {
-		Icon saveIcon = new ImageIcon(window.class.getResource("/icons/save.png"));
+		Icon saveIcon = new ImageIcon(Window.class.getResource("/icons/save.png"));
 		public saveFile() {
 			putValue(NAME, "Guardar");
 			putValue(SHORT_DESCRIPTION, "Guardar un archivo");
@@ -415,7 +410,7 @@ public class window {
                 //c.disableButton(jButtonEncender);
                // c.enableConnectionPanel(jButtonRefresh, jComboBoxPorts);
             } catch (Exception ex) {
-                Logger.getLogger(window.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         } else {
@@ -427,7 +422,7 @@ public class window {
                 //c.disableButton(jButtonApagar);
                 //c.disableConnectionPanel(jButtonRefresh, jComboBoxPorts);
             } catch (Exception ex) {
-                Logger.getLogger(window.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }         

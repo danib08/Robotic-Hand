@@ -9,8 +9,6 @@ import java.util.Iterator;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-import com.robotichand.Arduino.Create;
-
 public class Main {
 
 	private static final String EXTENSION = "rbg";
@@ -50,9 +48,6 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-
-		
 
 	}
 

@@ -1,4 +1,4 @@
-package ide;
+package com.robotichand.Ide;
 
 import java.io.File;
 
