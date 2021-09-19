@@ -9,6 +9,7 @@ public class Move implements ASTNode {
 	
 	private String finger;
 	private ASTNode condition;
+	private MainProgram program = new MainProgram();
 	
 	public Move(String finger, ASTNode condition) {
 		super();
@@ -33,13 +34,13 @@ public class Move implements ASTNode {
 						System.out.println("P");
 						 if ((boolean)condition.execute(symbolTable) == true) {
 							 try {
-						            MainProgram.arduino.sendData("PS");
+						            program.arduino.sendData("PS");
 						        } catch (Exception ex) {
 						            Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
 						        }
 						 }else {
 							 try {
-						            MainProgram.arduino.sendData("PB");
+						            program.arduino.sendData("PB");
 						        } catch (Exception ex) {
 						            Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
 						        }
@@ -49,13 +50,13 @@ public class Move implements ASTNode {
 						System.out.println("I");
 						if ((boolean)condition.execute(symbolTable) == true) {
 							 try {
-						            MainProgram.arduino.sendData("IS");
+						            program.arduino.sendData("IS");
 						        } catch (Exception ex) {
 						            Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
 						        }
 						 }else {
 							 try {
-						            MainProgram.arduino.sendData("IB");
+						            program.arduino.sendData("IB");
 						        } catch (Exception ex) {
 						            Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
 						        }
@@ -65,13 +66,13 @@ public class Move implements ASTNode {
 						System.out.println("M");
 						if ((boolean)condition.execute(symbolTable) == true) {
 							 try {
-						            MainProgram.arduino.sendData("MS");
+						            program.arduino.sendData("MS");
 						        } catch (Exception ex) {
 						            Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
 						        }
 						 }else {
 							 try {
-						            MainProgram.arduino.sendData("MB");
+						            program.arduino.sendData("MB");
 						        } catch (Exception ex) {
 						            Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
 						        }
@@ -81,13 +82,13 @@ public class Move implements ASTNode {
 						System.out.println("A");
 						if ((boolean)condition.execute(symbolTable) == true) {
 							 try {
-						            MainProgram.arduino.sendData("AS");
+						            program.arduino.sendData("AS");
 						        } catch (Exception ex) {
 						            Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
 						        }
 						 }else {
 							 try {
-						            MainProgram.arduino.sendData("AB");
+						            program.arduino.sendData("AB");
 						        } catch (Exception ex) {
 						            Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
 						        }
@@ -97,13 +98,13 @@ public class Move implements ASTNode {
 						System.out.println("Q");
 						if ((boolean)condition.execute(symbolTable) == true) {
 							 try {
-						            MainProgram.arduino.sendData("QS");
+						            program.arduino.sendData("QS");
 						        } catch (Exception ex) {
 						            Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
 						        }
 						 }else {
 							 try {
-						            MainProgram.arduino.sendData("QB");
+						            program.arduino.sendData("QB");
 						        } catch (Exception ex) {
 						            Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
 						        }
@@ -113,13 +114,13 @@ public class Move implements ASTNode {
 						System.out.println("T");
 						if ((boolean)condition.execute(symbolTable) == true) {
 							 try {
-						            MainProgram.arduino.sendData("TS");
+						            program.arduino.sendData("TS");
 						        } catch (Exception ex) {
 						            Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
 						        }
 						 }else {
 							 try {
-						            MainProgram.arduino.sendData("TB");
+						            program.arduino.sendData("TB");
 						        } catch (Exception ex) {
 						            Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
 						        }
