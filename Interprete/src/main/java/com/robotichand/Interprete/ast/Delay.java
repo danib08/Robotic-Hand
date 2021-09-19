@@ -11,6 +11,7 @@ public class Delay implements ASTNode {
 	
 	private ASTNode constant;
 	private String rango;
+	private MainProgram program = new MainProgram();
 
 
 	public Delay(ASTNode constant, String rango) {
@@ -47,10 +48,11 @@ public class Delay implements ASTNode {
 			String data = "D" + tiempo;
 			
 			try {
-	            MainProgram.arduino.sendData(data);
+	            program.arduino.sendData("data");
 	        } catch (Exception ex) {
-	            Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
-	        }
+	            Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex)
+	        }		
+			
 		}
 		
 		return null;
