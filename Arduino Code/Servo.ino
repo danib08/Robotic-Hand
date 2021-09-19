@@ -23,9 +23,22 @@ void setup() {
 void loop() {
     if (Serial.available() > 0) {
       input = Serial.readString();
-      switch(input[0]) {
+      if (input[0] == 'D'){
+        String delayVal;
+        for (int i = 1; i < input.length()-1;i++){
+          delayVal += input[i];
+          } 
+        funDelay(delayVal.toInt());
+      }else{
+        servos(input);
+      }
+      }
+
+}
+  void servos(String valor){
+    switch(valor[0]) {
           case 'P':
-            if (input[1] == 'S'){
+            if (valor[1] == 'S'){
               Serial.println("sube P");
               servoMotor1.write(170);
             }else{
@@ -34,7 +47,7 @@ void loop() {
             }
             break;
           case 'I':
-            if (input[1] == 'S'){
+            if (valor[1] == 'S'){
               Serial.println("sube I");
               servoMotor2.write(180);
             }else{
@@ -43,7 +56,7 @@ void loop() {
             }
             break;
           case 'M':
-            if (input[1] == 'S'){
+            if (valor[1] == 'S'){
               Serial.println("sube M");
               servoMotor3.write(180);
             }else{
@@ -52,7 +65,7 @@ void loop() {
             }
             break;
           case 'A':
-            if (input[1] == 'S'){
+            if (valor[1] == 'S'){
               Serial.println("sube A");
               servoMotor4.write(180);
             }else{
@@ -61,7 +74,7 @@ void loop() {
             }
             break;
           case 'Q':
-            if (input[1] == 'S'){
+            if (valor[1] == 'S'){
               Serial.println("sube Q");
               servoMotor5.write(180);
             }else{
@@ -70,7 +83,7 @@ void loop() {
             }
             break;
           case 'T':
-            if (input[1] == 'S'){
+            if (valor[1] == 'S'){
               Serial.println("sube T");
               servoMotor1.write(180);
               servoMotor2.write(180);
@@ -89,9 +102,11 @@ void loop() {
           default:
             break;
         }
-      }
-
-}
+   }
+   void funDelay(int temp){
+    Serial.println(temp);
+    delay(temp);
+    }
   
   // Desplazamos a la posición 90º
  // servoMotor.write(90);
