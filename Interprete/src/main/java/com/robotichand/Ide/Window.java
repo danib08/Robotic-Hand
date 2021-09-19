@@ -1,15 +1,9 @@
 package com.robotichand.Ide;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JTextPane;
-import java.awt.GridLayout;
-import javax.swing.JToolBar;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
