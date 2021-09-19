@@ -12,9 +12,7 @@ public class MainProgram {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		Main interprete = new Main();
 			
-	    //public static PanamaHitek_Arduino arduino = new PanamaHitek_Arduino();
 	    Window window;
 		
 		try {

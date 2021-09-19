@@ -78,6 +78,7 @@ public class Window {
 	 */
 	public Window(PanamaHitek_Arduino arduino) throws IOException {
 		this.arduino = arduino;
+
 		initialize();
 		RSyntax();
 		frmRobotichandIde.setVisible(true);
@@ -127,8 +128,7 @@ public class Window {
 		frmRobotichandIde.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel errorPanel = new JPanel();
-		
-		
+
 		errorPanel.setBackground(Color.DARK_GRAY);
 		errorPanel.setLayout(new BorderLayout(0, 0));
 		
@@ -136,12 +136,8 @@ public class Window {
 		errorPanel.add(scrollpane);
 		
 		panel = new JPanel();
-		
-		
-		
+	
 		panel.setBackground(Color.DARK_GRAY);
-		
-		
 		
 		JButton btnNewButton_1 = new JButton("Compilar y ejecutar");
 		btnNewButton_1.setForeground(Color.WHITE);
@@ -168,7 +164,6 @@ public class Window {
         new Thread(ccn).start();
 
 		tree.setBackground(Color.DARK_GRAY);
-		
 	
 		GroupLayout groupLayout = new GroupLayout(frmRobotichandIde.getContentPane());
 		groupLayout.setHorizontalGroup(
@@ -188,6 +183,7 @@ public class Window {
 						.addComponent(errorPanel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE))
 					.addContainerGap())
 		);
+		
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addComponent(separator, GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
@@ -212,13 +208,14 @@ public class Window {
 		txtpnErrores.setBorder(new LineBorder(new Color(192, 192, 192), 2));
 		txtpnErrores.setEditable(false);
 		txtpnErrores.setText("Errores");
-		
+
 		PrintStream printStream = new PrintStream(new CustomOutputStream(txtpnErrores));
 		
 		// keeps reference of standard output stream
         standardOut = System.out;
 		
 		System.setOut(printStream);
+		
 		System.setErr(printStream);
 
 		frmRobotichandIde.getContentPane().setLayout(groupLayout);

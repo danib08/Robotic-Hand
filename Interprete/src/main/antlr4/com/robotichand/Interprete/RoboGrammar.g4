@@ -12,6 +12,7 @@ grammar RoboGrammar;
 	import com.robotichand.Interprete.ast.VarRef;
 	import com.robotichand.Interprete.ast.Opera;
 	import com.robotichand.Interprete.ast.Move;	
+	import com.robotichand.Interprete.ast.Delay;	
 }
 
 @parser::members {
@@ -35,7 +36,9 @@ sentence returns [ASTNode node]: println {$node = $println.node;}
 				| conditional {$node = $conditional.node;}
 				| var_assign {$node = $var_assign.node;}
 				| opera {$node = $opera.node;}
-				| move {$node = $move.node;};
+				| move {$node = $move.node;}
+				| delay {$node = $delay.node;};
+				
 				
 move returns [ASTNode node]: MOVE OPEN_PAR STRING COMMA bool CLOSE_PAR SEMICOLON
 			{
@@ -69,6 +72,12 @@ println returns [ASTNode node]: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
 		{
 			$node = new PrintLn($expression.node);
 		};
+		
+delay returns [ASTNode node]: DELAY OPEN_PAR NUMBER COMMA STRING CLOSE_PAR SEMICOLON
+		{
+			$node = new Delay(new Constant(Integer.parseInt($NUMBER.text)), $STRING.text);
+		};
+
 
 opera returns [ASTNode node]: OPERA OPEN_PAR operator COMMA o1 = expression COMMA o2 = expression CLOSE_PAR 
 		{
@@ -106,6 +115,7 @@ IF: 'if';
 ELSE_IF: 'else if';
 ELSE: 'else';
 MOVE: 'Move';
+DELAY: 'Delay';
 
 ASSIGN: '=';
 SEMICOLON: ';';
