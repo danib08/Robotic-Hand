@@ -1,1 +1,4 @@
 Move("P",true);
+Delay(5, "Seg");
+Move("I", true);
+

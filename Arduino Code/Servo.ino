@@ -13,77 +13,76 @@ String input;
 void setup() {
   Serial.begin(9600);
    
-  servoMotor2.attach(1);
-  servoMotor3.attach(2);
-  servoMotor4.attach(3);
-  servoMotor5.attach(4);
-  servoMotor1.attach(5);
+  servoMotor1.attach(6);
+  servoMotor2.attach(2);
+  servoMotor3.attach(3);
+  servoMotor4.attach(4);
+  servoMotor5.attach(7);
+
+
+  servoMotor1.write(170);
+  servoMotor2.write(0);
+  servoMotor3.write(0);
+  servoMotor4.write(0);
+  servoMotor5.write(0);
 }
  
 void loop() {
-    if (Serial.available() > 0) {
-      input = Serial.readString();
-      if (input[0] == 'D'){
-        String delayVal;
-        for (int i = 1; i < input.length()-1;i++){
-          delayVal += input[i];
-          } 
-        funDelay(delayVal.toInt());
-      }else{
-        servos(input);
-      }
-      }
-
+     input = Serial.readString();
+     moveServo(input);
+     
 }
-  void servos(String valor){
-    switch(valor[0]) {
+void moveServo(String fingerAction){
+  switch(fingerAction[0]) {
           case 'P':
-            if (valor[1] == 'S'){
+            if (fingerAction[1] == 'S'){
               Serial.println("sube P");
               servoMotor1.write(170);
+              
             }else{
                 Serial.println("baja P");
                 servoMotor1.write(0);
+                
             }
             break;
           case 'I':
-            if (valor[1] == 'S'){
+            if (fingerAction[1] == 'S'){
               Serial.println("sube I");
-              servoMotor2.write(180);
+              servoMotor2.write(0);
             }else{
                 Serial.println("baja I");
-                servoMotor2.write(0);
+                servoMotor2.write(180);
             }
             break;
           case 'M':
-            if (valor[1] == 'S'){
+            if (fingerAction[1] == 'S'){
               Serial.println("sube M");
-              servoMotor3.write(180);
+              servoMotor3.write(0);
             }else{
                 Serial.println("baja M");
-                servoMotor3.write(0);
+                servoMotor3.write(180);
             }
             break;
           case 'A':
-            if (valor[1] == 'S'){
+            if (fingerAction[1] == 'S'){
               Serial.println("sube A");
-              servoMotor4.write(180);
+              servoMotor4.write(0);
             }else{
                 Serial.println("baja A");
-                servoMotor4.write(0);
+                servoMotor4.write(180);
             }
             break;
           case 'Q':
-            if (valor[1] == 'S'){
+            if (fingerAction[1] == 'S'){
               Serial.println("sube Q");
-              servoMotor5.write(180);
+              servoMotor5.write(0);
             }else{
                 Serial.println("baja Q");
-                servoMotor5.write(0);
+                servoMotor5.write(180);
             }
             break;
           case 'T':
-            if (valor[1] == 'S'){
+            if (fingerAction[1] == 'S'){
               Serial.println("sube T");
               servoMotor1.write(180);
               servoMotor2.write(180);
@@ -101,19 +100,6 @@ void loop() {
             break;
           default:
             break;
-        }
    }
-   void funDelay(int temp){
-    Serial.println(temp);
-    delay(temp);
-    }
   
-  // Desplazamos a la posición 90º
- // servoMotor.write(90);
-  // Esperamos 1 segundo
-  //delay(1000);
-  
-  // Desplazamos a la posición 180º
- // servoMotor.write(180);
-  // Esperamos 1 segundo
- // delay(1000);
+  }

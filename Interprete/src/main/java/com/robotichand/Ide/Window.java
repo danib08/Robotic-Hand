@@ -78,7 +78,6 @@ public class Window {
 	 */
 	public Window(PanamaHitek_Arduino arduino) throws IOException {
 		this.arduino = arduino;
-
 		initialize();
 		RSyntax();
 		frmRobotichandIde.setVisible(true);
