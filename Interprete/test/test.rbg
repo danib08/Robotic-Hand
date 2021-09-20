@@ -3,8 +3,6 @@
 let aaa = OPERA(+, OPERA(+, 5, 5), OPERA(+, 5, 5));
 let beeb = 1;
 let squeeb = 6;
-for cifra in 1..11 {
-	println!(cifra);
-	}
-println!(cifra);
-println!(cifra);
+for cifra in 1..=5 { @ for loop
+	println!(beeb);
+}

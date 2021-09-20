@@ -14,6 +14,7 @@ grammar RoboGrammar;
 	import com.robotichand.Interprete.ast.Opera;
 	import com.robotichand.Interprete.ast.ForLoop;
 	import com.robotichand.Interprete.ast.While;
+	import com.robotichand.Interprete.ast.Loop;
 }
 
 @parser::members {
@@ -37,7 +38,9 @@ sentence returns [ASTNode node]: println {$node = $println.node;}
 				| var_assign {$node = $var_assign.node;}
 				| opera {$node = $opera.node;}
 				| for_loop {$node = $for_loop.node;}
-				| while_loop {$node = $while_loop.node;};
+				| while_loop {$node = $while_loop.node;}
+				| loop {$node = $loop.node;}
+				| break_ {$node = $break_.node;};
 				
 conditional returns [ASTNode node]: IF (c1 = condition) 
 			{
@@ -103,8 +106,16 @@ while_loop returns [ASTNode node]: WHILE OPEN_PAR ((exp1 = expression) algorithm
 			{
 				$node = new While($exp1.node, $algorithmic.text, $exp2.node, body);
 			};
-			
-			
+fn returns [ASTNode node]:;
+
+loop returns [ASTNode node]: LOOP
+			{ List<ASTNode> body = new ArrayList<ASTNode>(); } 
+			OPEN_BRAC (sc = sentence {body.add($sc.node);})*  CLOSE_BRAC
+			{
+				$node = new Loop(body);
+			};
+break_ returns [ASTNode node]: BREAK SEMICOLON;	   
+
 bool returns [ASTNode node]:
 		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));}
 		|
@@ -133,7 +144,8 @@ range: RANGE | RANGE_END;
 
 logic: AND | OR;
 
-algorithmic: LESS | GREATER | LESSEQUALS | GREATEREQUALS | EQUALS | DIFFERENT; 
+algorithmic: LESS | GREATER | LESSEQUALS | GREATEREQUALS | EQUALS | DIFFERENT;
+
 
 
 PRINTLN: 'println!';
@@ -146,6 +158,8 @@ ELSE: 'else';
 FOR: 'for';
 IN: 'in';
 WHILE: 'while';
+LOOP : 'loop';
+BREAK: 'break';
 
 ASSIGN: '=';
 SEMICOLON: ';';
@@ -177,6 +191,8 @@ CLOSE_BRAC: '}';
 NUMBER: [0-9]+;
 
 ID: [a-zA-Z#_?][a-zA-Z0-9]*;
+
+COMMENT: ( '@' ~[\r\n]* '\r'? '\n') -> skip;
 
 WS: [ \n\t\r]+ -> skip;
 
