@@ -9,6 +9,7 @@ public class Move implements ASTNode {
 	
 	private String finger;
 	private ASTNode condition;
+	private MainProgram program = new MainProgram();
 	
 	
 	
@@ -37,7 +38,6 @@ public class Move implements ASTNode {
 							 try {
 						            MainProgram.arduino.sendData("PS");
 						            Thread.sleep(1500);
-						            System.out.println("PS");
 						        } catch (Exception ex) {
 						            Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
 						        }
@@ -45,14 +45,12 @@ public class Move implements ASTNode {
 							 try {
 								 MainProgram.arduino.sendData("PB");
 								 Thread.sleep(1500);
-								 System.out.println("PB");
 						        } catch (Exception ex) {
 						            Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
 						        }
 						 }
 						break;
 					case "I":
-						System.out.println("I");
 						if ((boolean)condition.execute(symbolTable) == false) {
 							 try {
 								 MainProgram.arduino.sendData("IS");
@@ -70,7 +68,6 @@ public class Move implements ASTNode {
 						 }
 						break;
 					case "M":
-						System.out.println("M");
 						if ((boolean)condition.execute(symbolTable) == false) {
 							 try {
 								 MainProgram.arduino.sendData("MS");
@@ -88,9 +85,9 @@ public class Move implements ASTNode {
 						 }
 						break;
 					case "A":
-						System.out.println("A");
 						if ((boolean)condition.execute(symbolTable) == false) {
 							 try {
+
 								 MainProgram.arduino.sendData("AS");
 								 Thread.sleep(1500);
 						        } catch (Exception ex) {
@@ -106,7 +103,6 @@ public class Move implements ASTNode {
 						 }
 						break;
 					case "Q":
-						System.out.println("Q");
 						if ((boolean)condition.execute(symbolTable) == false) {
 							 try {
 								 MainProgram.arduino.sendData("QS");
@@ -124,7 +120,6 @@ public class Move implements ASTNode {
 						 }
 						break;
 					case "T":
-						System.out.println("T");
 						if ((boolean)condition.execute(symbolTable) == false) {
 							 try {
 								 MainProgram.arduino.sendData("TS");
