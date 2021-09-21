@@ -38,14 +38,12 @@ sentence returns [ASTNode node]: println {$node = $println.node;}
 				| var_assign {$node = $var_assign.node;}
 				| opera {$node = $opera.node;}
 				| move {$node = $move.node;}
-				| delay {$node = $delay.node;}
-				| list {$node = $list.node;};
+				| delay {$node = $delay.node;};
 				
 				
-move returns [ASTNode node]: MOVE OPEN_PAR (STRING | list) COMMA bool CLOSE_PAR SEMICOLON
-			{
-				$node = new Move($STRING.text, $bool.node);
-			};
+move returns [ASTNode node]: MOVE OPEN_PAR ( 
+		list {$node = new Lista($list.node);}
+		) COMMA bool CLOSE_PAR SEMICOLON;
 				
 
 conditional returns [ASTNode node]: IF (c1 = condition) 

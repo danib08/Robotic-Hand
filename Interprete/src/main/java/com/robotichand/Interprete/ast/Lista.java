@@ -7,7 +7,6 @@ import java.util.List;
 public class Lista implements ASTNode {
 	
 	private List<String> fingers;
-
 	
 	public Lista(List<String> fingers) {
 		super();
