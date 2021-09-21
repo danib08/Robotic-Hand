@@ -13,6 +13,7 @@ grammar RoboGrammar;
 	import com.robotichand.Interprete.ast.Opera;
 	import com.robotichand.Interprete.ast.Move;	
 	import com.robotichand.Interprete.ast.Delay;	
+	import com.robotichand.Interprete.ast.Lista;	
 }
 
 @parser::members {
@@ -105,9 +106,22 @@ expression returns [ASTNode node]:
 		| 
 		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));};
 		
-list returns [ASTNode node]: OPEN_CUADR ((STRING COMMA)* STRING)? CLOSE_CUADR SEMICOLON
+list returns [ASTNode node]: OPEN_CUADR 
 		{
-			System.out.println("listita");
+			List<String> fingers = new ArrayList<String>();
+		}
+		((s1 = STRING {
+			String finger = ($s1.text).replace("\"", "");
+			fingers.add(finger);
+		} 
+		COMMA)* STRING {
+			String finger = ($STRING.text).replace("\"", "");
+			fingers.add(finger);
+		}
+		)? CLOSE_CUADR 
+		
+		{
+			$node = new Lista(fingers);
 		};
 		
 operator: SUM | MINUS | MULT | DIV | EXP;
