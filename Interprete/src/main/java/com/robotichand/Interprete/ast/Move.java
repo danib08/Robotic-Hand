@@ -8,10 +8,7 @@ import com.robotichand.Interprete.MainProgram;
 public class Move implements ASTNode {
 	
 	private String finger;
-	private ASTNode condition;
-	private MainProgram program = new MainProgram();
-	
-	
+	private ASTNode condition;	
 	
 	public Move(String finger, ASTNode condition) {
 		super();

@@ -37,10 +37,11 @@ sentence returns [ASTNode node]: println {$node = $println.node;}
 				| var_assign {$node = $var_assign.node;}
 				| opera {$node = $opera.node;}
 				| move {$node = $move.node;}
-				| delay {$node = $delay.node;};
+				| delay {$node = $delay.node;}
+				| list {$node = $list.node;};
 				
 				
-move returns [ASTNode node]: MOVE OPEN_PAR STRING COMMA bool CLOSE_PAR SEMICOLON
+move returns [ASTNode node]: MOVE OPEN_PAR (STRING | list) COMMA bool CLOSE_PAR SEMICOLON
 			{
 				$node = new Move($STRING.text, $bool.node);
 			};
@@ -104,6 +105,11 @@ expression returns [ASTNode node]:
 		| 
 		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));};
 		
+list returns [ASTNode node]: OPEN_CUADR ((STRING COMMA)* STRING)? CLOSE_CUADR SEMICOLON
+		{
+			System.out.println("listita");
+		};
+		
 operator: SUM | MINUS | MULT | DIV | EXP;
 
 
@@ -131,6 +137,8 @@ OPEN_PAR: '(';
 CLOSE_PAR: ')';
 OPEN_BRAC: '{';
 CLOSE_BRAC: '}';
+OPEN_CUADR: '[';
+CLOSE_CUADR: ']';
 
 NUMBER: [0-9]+;
 
