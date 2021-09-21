@@ -1,2 +1,1 @@
-let aaa = OPERA(+, OPERA(+, 5, 5), OPERA(+, 5, 5));
-println!(aaa);
+Move(["P","I"],true);

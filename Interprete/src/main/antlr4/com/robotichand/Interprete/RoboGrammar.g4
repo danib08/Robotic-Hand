@@ -11,10 +11,15 @@ grammar RoboGrammar;
 	import com.robotichand.Interprete.ast.VarAssign;
 	import com.robotichand.Interprete.ast.VarRef;
 	import com.robotichand.Interprete.ast.Opera;
+	import com.robotichand.Interprete.ast.Move;	
+	import com.robotichand.Interprete.ast.Delay;	
+	import com.robotichand.Interprete.ast.Lista;	
+	import com.robotichand.Interprete.ast.Strings;
 }
 
 @parser::members {
 	Map<String, Object> symbolTable = new HashMap<String, Object>();
+
 }
 
 
@@ -32,8 +37,25 @@ program:{
 sentence returns [ASTNode node]: println {$node = $println.node;} 
 				| conditional {$node = $conditional.node;}
 				| var_assign {$node = $var_assign.node;}
-				|opera {$node = $opera.node;};
+				| opera {$node = $opera.node;}
+				| move {$node = $move.node;}
+				| delay {$node = $delay.node;};
 				
+				
+move returns [ASTNode node]: MOVE {boolean lista;} OPEN_PAR (list {lista = true;}| STRING {lista = false;}) 
+		COMMA bool CLOSE_PAR SEMICOLON
+		{
+			if (lista) {
+				$node = new Move($list.node , $bool.node);
+			}
+			else {
+				List<String> finger = new ArrayList<String>();
+				finger.add(($STRING.text).replace("\"", ""));
+				$node = new Move(new Strings(finger), $bool.node);
+			}
+		};
+				
+
 conditional returns [ASTNode node]: IF (c1 = condition) 
 			{
 				List<ASTNode> body = new ArrayList<ASTNode>();
@@ -60,6 +82,12 @@ println returns [ASTNode node]: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
 		{
 			$node = new PrintLn($expression.node);
 		};
+		
+delay returns [ASTNode node]: DELAY OPEN_PAR NUMBER COMMA STRING CLOSE_PAR SEMICOLON
+		{
+			$node = new Delay(new Constant(Integer.parseInt($NUMBER.text)), $STRING.text);
+		};
+
 
 opera returns [ASTNode node]: OPERA OPEN_PAR operator COMMA o1 = expression COMMA o2 = expression CLOSE_PAR 
 		{
@@ -86,6 +114,24 @@ expression returns [ASTNode node]:
 		| 
 		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));};
 		
+list returns [ASTNode node]: OPEN_CUADR 
+		{
+			List<String> fingers = new ArrayList<String>();
+		}
+		((s1 = STRING {
+			String finger = ($s1.text).replace("\"", "");
+			fingers.add(finger);
+		} 
+		COMMA)* STRING {
+			String finger = ($STRING.text).replace("\"", "");
+			fingers.add(finger);
+		}
+		)? CLOSE_CUADR 
+		
+		{
+			$node = new Lista(fingers);
+		};
+		
 operator: SUM | MINUS | MULT | DIV | EXP;
 
 
@@ -96,6 +142,8 @@ BOOLEAN: 'true' | 'false';
 IF: 'if';
 ELSE_IF: 'else if';
 ELSE: 'else';
+MOVE: 'Move';
+DELAY: 'Delay';
 
 ASSIGN: '=';
 SEMICOLON: ';';
@@ -111,8 +159,12 @@ OPEN_PAR: '(';
 CLOSE_PAR: ')';
 OPEN_BRAC: '{';
 CLOSE_BRAC: '}';
+OPEN_CUADR: '[';
+CLOSE_CUADR: ']';
 
 NUMBER: [0-9]+;
+
+STRING : '"' .*? '"' ;
 
 ID: [a-zA-Z#_?][a-zA-Z0-9]*;
 
