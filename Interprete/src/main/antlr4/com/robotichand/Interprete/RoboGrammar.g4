@@ -42,7 +42,7 @@ sentence returns [ASTNode node]: println {$node = $println.node;}
 				| delay {$node = $delay.node;};
 				
 				
-move returns [ASTNode node]: MOVE OPEN_PAR (list {boolean lista = true;}| STRING {boolean lista = false;}) 
+move returns [ASTNode node]: MOVE {boolean lista;} OPEN_PAR (list {lista = true;}| STRING {lista = false;}) 
 		COMMA bool CLOSE_PAR SEMICOLON
 		{
 			if (lista) {
