@@ -14,6 +14,7 @@ grammar RoboGrammar;
 	import com.robotichand.Interprete.ast.Move;	
 	import com.robotichand.Interprete.ast.Delay;	
 	import com.robotichand.Interprete.ast.Lista;	
+	import com.robotichand.Interprete.ast.Strings;
 }
 
 @parser::members {
@@ -41,9 +42,17 @@ sentence returns [ASTNode node]: println {$node = $println.node;}
 				| delay {$node = $delay.node;};
 				
 				
-move returns [ASTNode node]: MOVE OPEN_PAR (list) COMMA bool CLOSE_PAR SEMICOLON
+move returns [ASTNode node]: MOVE OPEN_PAR (list {boolean lista = true;}| STRING {boolean lista = false;}) 
+		COMMA bool CLOSE_PAR SEMICOLON
 		{
-			$node = new Move($list.node , $bool.node);
+			if (lista) {
+				$node = new Move($list.node , $bool.node);
+			}
+			else {
+				List<String> finger = new ArrayList<String>();
+				finger.add(($STRING.text).replace("\"", ""));
+				$node = new Move(new Strings(finger), $bool.node);
+			}
 		};
 				
 

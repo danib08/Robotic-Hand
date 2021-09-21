@@ -22,9 +22,7 @@ public class Delay implements ASTNode {
 	@Override
 	public Object execute(Map<String, Object> symbolTable) {
 		// TODO Auto-generated method stub
-		System.out.println(rango);
 		rango = rango.replace("\"", "");
-		System.out.println(rango);
 		int cantidad = (int) constant.execute(symbolTable);
 		int tiempo = 0;
 		boolean valid = true;
