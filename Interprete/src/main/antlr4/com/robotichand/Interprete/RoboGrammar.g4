@@ -41,9 +41,10 @@ sentence returns [ASTNode node]: println {$node = $println.node;}
 				| delay {$node = $delay.node;};
 				
 				
-move returns [ASTNode node]: MOVE OPEN_PAR ( 
-		list {$node = new Lista($list.node);}
-		) COMMA bool CLOSE_PAR SEMICOLON;
+move returns [ASTNode node]: MOVE OPEN_PAR (list) COMMA bool CLOSE_PAR SEMICOLON
+		{
+			$node = new Move($list.node , $bool.node);
+		};
 				
 
 conditional returns [ASTNode node]: IF (c1 = condition) 

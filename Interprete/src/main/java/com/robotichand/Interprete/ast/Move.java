@@ -9,11 +9,12 @@ import com.robotichand.Interprete.MainProgram;
 public class Move implements ASTNode {
 	
 	private List<String> fingers;
+	private ASTNode list_node;
 	private ASTNode condition;	
 	
-	public Move(List<String> fingers, ASTNode condition) {
+	public Move(ASTNode list_node, ASTNode condition) {
 		super();
-		this.fingers = fingers;
+		this.list_node = list_node;
 		this.condition = condition;		
 	}
 
@@ -21,6 +22,8 @@ public class Move implements ASTNode {
 	@Override
 	public Object execute(Map<String, Object> symbolTable) {
 		// TODO Auto-generated method stub
+		fingers = (List<String>) list_node.execute(symbolTable);
+		
 		try {
 			//finger = finger.replace("\"", "");
 			if ((condition.execute(symbolTable)).getClass() != Boolean.class) {
