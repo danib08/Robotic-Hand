@@ -7,6 +7,7 @@ grammar RoboGrammar;
 	import com.robotichand.Interprete.ast.ASTNode;
 	import com.robotichand.Interprete.ast.Constant;
 	import com.robotichand.Interprete.ast.IfCond;
+	import com.robotichand.Interprete.ast.Compare;
 	import com.robotichand.Interprete.ast.PrintLn;
 	import com.robotichand.Interprete.ast.VarAssign;
 	import com.robotichand.Interprete.ast.VarRef;
@@ -15,6 +16,9 @@ grammar RoboGrammar;
 	import com.robotichand.Interprete.ast.Delay;	
 	import com.robotichand.Interprete.ast.Lista;	
 	import com.robotichand.Interprete.ast.Strings;
+	import com.robotichand.Interprete.ast.ForLoop;
+	import com.robotichand.Interprete.ast.While;
+	import com.robotichand.Interprete.ast.Loop;
 }
 
 @parser::members {
@@ -39,8 +43,11 @@ sentence returns [ASTNode node]: println {$node = $println.node;}
 				| var_assign {$node = $var_assign.node;}
 				| opera {$node = $opera.node;}
 				| move {$node = $move.node;}
-				| delay {$node = $delay.node;};
-				
+				| delay {$node = $delay.node;}
+				| for_loop {$node = $for_loop.node;}
+				| while_loop {$node = $while_loop.node;}
+				| loop {$node = $loop.node;}
+				| break_ {$node = $break_.node;};
 				
 move returns [ASTNode node]: MOVE {boolean lista;} OPEN_PAR (list {lista = true;}| STRING {lista = false;}) 
 		COMMA bool CLOSE_PAR SEMICOLON
@@ -76,7 +83,15 @@ conditional returns [ASTNode node]: IF (c1 = condition)
 			};
 			
 
-condition returns [ASTNode node]: bool {$node = $bool.node;};
+condition returns [ASTNode node]: bool {$node = $bool.node;}
+				| (o1 = bool) logic (o2 = bool) 
+				{
+					$node = new Compare($o1.node, $logic.text, $o2.node);
+				}
+				| (n1 = num) algorithmic (n2 = num)
+				{
+					$node = new Compare($n1.node, $algorithmic.text, $n2.node);
+				};
 
 println returns [ASTNode node]: PRINTLN OPEN_PAR expression CLOSE_PAR SEMICOLON
 		{
@@ -89,7 +104,7 @@ delay returns [ASTNode node]: DELAY OPEN_PAR NUMBER COMMA STRING CLOSE_PAR SEMIC
 		};
 
 
-opera returns [ASTNode node]: OPERA OPEN_PAR operator COMMA o1 = expression COMMA o2 = expression CLOSE_PAR 
+opera returns [ASTNode node]: OPERA OPEN_PAR operator COMMA o1 = num COMMA o2 = num CLOSE_PAR 
 		{
 			$node = new Opera($operator.text, $o1.node, $o2.node);		
 		};
@@ -97,7 +112,36 @@ opera returns [ASTNode node]: OPERA OPEN_PAR operator COMMA o1 = expression COMM
 var_assign returns [ASTNode node]:
 		LET ID ASSIGN expression SEMICOLON 
 		{$node = new VarAssign($ID.text, $expression.node);};
-		
+
+for_loop returns [ASTNode node]: FOR ID IN startRange = expression range endRange = expression
+			{
+				List<ASTNode> body = new ArrayList<ASTNode>();
+				
+			}
+			OPEN_BRAC (sc = sentence {body.add($sc.node);})* CLOSE_BRAC
+			{
+				
+				$node = new ForLoop($ID.text, $startRange.node, $range.text, $endRange.node, body);
+			};
+			
+while_loop returns [ASTNode node]: WHILE OPEN_PAR ((exp1 = expression) algorithmic (exp2 = num)) CLOSE_PAR
+			{
+				List<ASTNode> body = new ArrayList<ASTNode>();
+				
+			}
+			OPEN_BRAC (sc = sentence {body.add($sc.node);})* CLOSE_BRAC
+			{
+				$node = new While($exp1.node, $algorithmic.text, $exp2.node, body);
+			};
+fn returns [ASTNode node]:;
+
+loop returns [ASTNode node]: LOOP
+			{ List<ASTNode> body = new ArrayList<ASTNode>(); } 
+			OPEN_BRAC (sc = sentence {body.add($sc.node);})*  CLOSE_BRAC
+			{
+				$node = new Loop(body);
+			};
+break_ returns [ASTNode node]: BREAK SEMICOLON;	   
 
 bool returns [ASTNode node]:
 		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));}
@@ -131,8 +175,21 @@ list returns [ASTNode node]: OPEN_CUADR
 		{
 			$node = new Lista(fingers);
 		};
+num returns [ASTNode node]:
+		NUMBER {$node = new Constant(Integer.parseInt($NUMBER.text));}
+		| 
+		ID {$node = new VarRef($ID.text);}
+		|
+		opera {$node = $opera.node;};
 		
 operator: SUM | MINUS | MULT | DIV | EXP;
+
+range: RANGE | RANGE_END;
+
+logic: AND | OR;
+
+algorithmic: LESS | GREATER | LESSEQUALS | GREATEREQUALS | EQUALS | DIFFERENT;
+
 
 
 PRINTLN: 'println!';
@@ -144,10 +201,17 @@ ELSE_IF: 'else if';
 ELSE: 'else';
 MOVE: 'Move';
 DELAY: 'Delay';
+FOR: 'for';
+IN: 'in';
+WHILE: 'while';
+LOOP : 'loop';
+BREAK: 'break';
 
 ASSIGN: '=';
 SEMICOLON: ';';
 COMMA: ',';
+RANGE: '..';
+RANGE_END: '..=';
 
 SUM: '+';
 MINUS: '-';
@@ -155,6 +219,16 @@ MULT: '*';
 DIV: '/';
 EXP: '**';
 
+AND: '&&';
+OR: '||';
+
+LESS: '<';
+GREATER: '>';
+LESSEQUALS: '<=';
+GREATEREQUALS: '>=';
+EQUALS: '==';
+DIFFERENT: '<>';
+ 
 OPEN_PAR: '(';
 CLOSE_PAR: ')';
 OPEN_BRAC: '{';
@@ -167,6 +241,8 @@ NUMBER: [0-9]+;
 STRING : '"' .*? '"' ;
 
 ID: [a-zA-Z#_?][a-zA-Z0-9]*;
+
+COMMENT: ( '@' ~[\r\n]* '\r'? '\n') -> skip;
 
 WS: [ \n\t\r]+ -> skip;
 
