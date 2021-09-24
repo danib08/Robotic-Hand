@@ -20,7 +20,7 @@ void setup() {
   servoMotor5.attach(7);
 
 
-  servoMotor1.write(170);
+  servoMotor1.write(180);
   servoMotor2.write(0);
   servoMotor3.write(0);
   servoMotor4.write(0);
@@ -37,7 +37,7 @@ void moveServo(String fingerAction){
           case 'P':
             if (fingerAction[1] == 'S'){
               Serial.println("sube P");
-              servoMotor1.write(170);
+              servoMotor1.write(180);
               
             }else{
                 Serial.println("baja P");
@@ -85,17 +85,17 @@ void moveServo(String fingerAction){
             if (fingerAction[1] == 'S'){
               Serial.println("sube T");
               servoMotor1.write(180);
-              servoMotor2.write(180);
-              servoMotor3.write(180);
-              servoMotor4.write(180);
-              servoMotor5.write(180);
+              servoMotor2.write(0);
+              servoMotor3.write(0);
+              servoMotor4.write(0);
+              servoMotor5.write(0);
             }else{
                 Serial.println("baja T");
                 servoMotor1.write(0);
-                servoMotor2.write(0);
-                servoMotor3.write(0);
-                servoMotor4.write(0);
-                servoMotor5.write(0);
+                servoMotor2.write(180);
+                servoMotor3.write(180);
+                servoMotor4.write(180);
+                servoMotor5.write(180);
             }
             break;
           default:
