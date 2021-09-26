@@ -6,3 +6,13 @@ let squeeb = 6;
 for cifra in 1..=5 { @ for loop
 	println!(cifra);
 }
+
+loop {
+	let beeb = OPERA(+, beeb, 1);
+	println!(beeb);
+	break;
+}
+
+while (beeb < squeeb) {
+	println!(beeb);
+}

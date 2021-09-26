@@ -15,6 +15,7 @@ grammar RoboGrammar;
 	import com.robotichand.Interprete.ast.ForLoop;
 	import com.robotichand.Interprete.ast.While;
 	import com.robotichand.Interprete.ast.Loop;
+	import com.robotichand.Interprete.ast.BreakLoop;
 }
 
 @parser::members {
@@ -40,7 +41,7 @@ sentence returns [ASTNode node]: println {$node = $println.node;}
 				| for_loop {$node = $for_loop.node;}
 				| while_loop {$node = $while_loop.node;}
 				| loop {$node = $loop.node;}
-				| break_ {$node = $break_.node;};
+				| break_loop {$node = $break_loop.node;};
 				
 conditional returns [ASTNode node]: IF (c1 = condition) 
 			{
@@ -97,24 +98,29 @@ for_loop returns [ASTNode node]: FOR ID IN startRange = expression range endRang
 				$node = new ForLoop($ID.text, $startRange.node, $range.text, $endRange.node, body);
 			};
 			
-while_loop returns [ASTNode node]: WHILE OPEN_PAR ((exp1 = expression) algorithmic (exp2 = num)) CLOSE_PAR
+while_loop returns [ASTNode node]: WHILE OPEN_PAR (exp1 = ID algorithmic exp2 = ID) CLOSE_PAR
 			{
 				List<ASTNode> body = new ArrayList<ASTNode>();
 				
 			}
 			OPEN_BRAC (sc = sentence {body.add($sc.node);})* CLOSE_BRAC
 			{
-				$node = new While($exp1.node, $algorithmic.text, $exp2.node, body);
+				$node = new While($exp1.text, $algorithmic.text, $exp2.text, body);
 			};
 fn returns [ASTNode node]:;
 
 loop returns [ASTNode node]: LOOP
-			{ List<ASTNode> body = new ArrayList<ASTNode>(); } 
+			{ 
+				List<ASTNode> body = new ArrayList<ASTNode>();
+			} 
 			OPEN_BRAC (sc = sentence {body.add($sc.node);})*  CLOSE_BRAC
 			{
 				$node = new Loop(body);
 			};
-break_ returns [ASTNode node]: BREAK SEMICOLON;	   
+break_loop returns [ASTNode node]: BREAK SEMICOLON
+			{
+				$node = new BreakLoop($BREAK.text);
+			};	   
 
 bool returns [ASTNode node]:
 		BOOLEAN {$node = new Constant(Boolean.parseBoolean($BOOLEAN.text));}
