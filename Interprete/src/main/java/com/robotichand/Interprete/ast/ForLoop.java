@@ -29,21 +29,20 @@ public class ForLoop implements ASTNode{
 		if(range.equals("..")){
 			for(int i = start; i < end; i++) {
 				for (ASTNode n : body) {
-					cont++;
 					n.execute(symbolTable);
-					symbolTable.put(name, cont);
 				}
+				cont++;
+				symbolTable.put(name, cont);
 			}		
 		}
 		
 		else if(range.equals("..=")){
 			for(int i = start; i <= end; i++) {
-				
 				for (ASTNode n : body) {
-					cont++;
 					n.execute(symbolTable);
-					symbolTable.put(name, cont);
 				}
+				cont++;
+				symbolTable.put(name, cont);
 			}		
 		}
 		//symbolTable.clear();

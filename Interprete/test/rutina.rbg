@@ -1,0 +1,58 @@
+let aaa = OPERA(*, OPERA(+, OPERA(+, 5, 5), OPERA(+, 5, 5)), 100);
+
+println!(aaa);
+
+let begin = 6;
+let end = 6;
+
+@ if statement
+if begin <= end { @ true
+	for cifra in 1..=6 { @ for loop
+		println!(cifra);
+		let begin = OPERA(-, begin, 1);
+		println!(begin);
+		println!(aaa);
+		Move(["A","M"],true);
+		Delay(1,"Seg");
+		Move(["A","M"],false);
+	}
+
+} else {
+	loop { @ loop (while true)
+		let begin = OPERA(+, begin, 1);
+		println!(begin);
+		Move("A",true);
+		Delay(5,"Mil");
+		Move("A",false);
+		break;
+	}
+}
+
+if begin > end {
+	loop { @ loop (while true)
+		let end = OPERA(-, end, 2);
+		println!(end);
+		Move(["I","Q","M"],true);
+		Delay(1,"Min");
+		Move(["I","Q","M"],false);
+		break;
+	}
+} else if begin == end {
+	for cifra in 1..=5 { @ for loop
+		println!(cifra);
+		let begin = OPERA(-, begin, 1);
+		println!(begin);
+		println!(aaa);
+		Move("T",true);
+		Delay(6,"Seg");
+		Move("T",false);
+	}
+} else { @ true
+	while (begin < end) { @ while loop
+		println!(end);
+		let begin = OPERA(+, begin, 1);
+		Move(["P","Q"],true);
+		Delay(3000,"Mil");
+		Move(["P","Q"],false);
+	}
+}
