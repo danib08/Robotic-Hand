@@ -1,19 +1,52 @@
-Move(["P","I"],true);
+Delay(15, "Seg");
 
+Move("P",true);
 
-let aaa = OPERA(+, OPERA(+, 5, 5), OPERA(+, 5, 5));
-let beeb = 1;
-let squeeb = 6;
-for cifra in 1..=5 { @ for loop
-	println!(cifra);
-}
+Move("I",true);
 
-loop {
-	let beeb = OPERA(+, beeb, 1);
-	println!(beeb);
-	break;
-}
+Move("M",true);
 
-while (beeb < squeeb) {
-	println!(beeb);
-}
+Move("A",true);
+
+Move("Q",true);
+
+Move("P",false);
+
+Delay(6, "Seg");
+Move("I",false);
+
+Delay(6, "Seg");
+Move("M",false);
+
+Delay(7, "Seg");
+Move("A",false);
+
+Delay(7, "Seg");
+Move("Q",false); @Termina C1
+
+Delay(24, "Seg");
+
+Move("P",true);
+
+Move("I",true);
+
+Move("M",true);
+
+Move("A",true);
+
+Move("Q",true);
+
+Move("P",false);
+
+Delay(6, "Seg");
+Move("I",false);
+
+Delay(6, "Seg");
+Move("M",false);
+
+Delay(7, "Seg");
+Move("A",false);
+
+Delay(7, "Seg");
+Move("Q",false); @Termina C2
+
