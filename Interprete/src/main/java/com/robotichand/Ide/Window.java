@@ -48,6 +48,7 @@ import java.awt.Font;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.Toolkit;
 
 public class Window {
 	
@@ -58,6 +59,7 @@ public class Window {
 	private final Action openFile = new openFile();
 	private final Action action = new runAction();
 	private final Action compile = new compileAction();
+	private final Action saveFile = new saveFile();
 	private RSyntaxTextArea textArea;
 	private final JFileChooser fileChooser = new JFileChooser();
 	private DefaultMutableTreeNode root;
@@ -88,19 +90,15 @@ public class Window {
 	 * @throws IOException 
 	 */
 	public void RSyntax() throws IOException{
-		textArea = new RSyntaxTextArea();
-                
-		panel.setLayout(new BorderLayout(0, 0));
-		
+		textArea = new RSyntaxTextArea();    
+		panel.setLayout(new BorderLayout(0, 0));		
 		RTextScrollPane sp = new RTextScrollPane(textArea);
-	    panel.add(sp);
-	    
+	    panel.add(sp);	    
 	    
 	    try {
-		     Theme theme = Theme.load(getClass().getResourceAsStream(
-		           "/org/fife/ui/rsyntaxtextarea/themes/monokai.xml"));
+		     Theme theme = Theme.load(getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/monokai.xml"));
 		     theme.apply(textArea);
-		  } catch (IOException ioe) { // Never happens
+		  } catch (IOException ioe) {
 		     ioe.printStackTrace();
 		  }
 	    BufferedReader in = new BufferedReader(new FileReader(file));
@@ -117,27 +115,35 @@ public class Window {
 	 */
 	private void initialize() {
 		frmRobotichandIde = new JFrame();
+		frmRobotichandIde.setIconImage(Toolkit.getDefaultToolkit().getImage(Window.class.getResource("/com/robotichand/Ide/icons/robotic-hand.png")));
 		frmRobotichandIde.setFont(new Font("Dialog", Font.PLAIN, 13));
 		frmRobotichandIde.setForeground(Color.BLACK);
-		//frmRobotichandIde.setIconImage(Toolkit.getDefaultToolkit().getImage(Window.class.getResource("/icons/robotic-hand.png")));
 		frmRobotichandIde.getContentPane().setBackground(Color.DARK_GRAY);
 		frmRobotichandIde.setBackground(Color.DARK_GRAY);
 		frmRobotichandIde.setTitle("RoboticHand IDE");
 		frmRobotichandIde.setBounds(100, 100, 939, 624);
 		frmRobotichandIde.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		// Error's text area
 		JPanel errorPanel = new JPanel();
-
 		errorPanel.setBackground(Color.DARK_GRAY);
 		errorPanel.setLayout(new BorderLayout(0, 0));
 		
+		txtpnErrores = new JTextArea();
+		txtpnErrores.setForeground(Color.LIGHT_GRAY);
+		txtpnErrores.setBackground(Color.DARK_GRAY);
+		txtpnErrores.setBorder(new LineBorder(new Color(192, 192, 192), 2));
+		txtpnErrores.setEditable(false);
+
 		JScrollPane scrollpane = new JScrollPane(txtpnErrores);
 		errorPanel.add(scrollpane);
 		
-		panel = new JPanel();
-	
-		panel.setBackground(Color.DARK_GRAY);
+		PrintStream printStream = new PrintStream(new CustomOutputStream(txtpnErrores));
 		
+		panel = new JPanel();
+		panel.setBackground(Color.DARK_GRAY);
+
+		// Buttons		
 		JButton btnNewButton_1 = new JButton("Compilar y ejecutar");
 		btnNewButton_1.setForeground(Color.WHITE);
 		btnNewButton_1.setBackground(Color.DARK_GRAY);
@@ -148,10 +154,17 @@ public class Window {
 		btnNewButton_1_1.setBackground(Color.DARK_GRAY);
 		btnNewButton_1_1.setAction(compile);
 
+		// Separator Line 
 		JSeparator separator = new JSeparator();
 		separator.setOrientation(SwingConstants.VERTICAL);
 		separator.setBackground(Color.LIGHT_GRAY);
-
+		
+		// Open file 
+		file = new File("../Interprete/test/test.rbg");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(null, "txt", "rbg");
+		fileChooser.setFileFilter(filter);
+		
+		// Left Tree
         File fileRoot = new File("../Interprete/test/");
         root = new DefaultMutableTreeNode(new FileNode(fileRoot));
         treeModel = new DefaultTreeModel(root);
@@ -200,25 +213,16 @@ public class Window {
 					.addGap(175))
 		);
 		
-		txtpnErrores = new JTextArea();
-		errorPanel.add(txtpnErrores);
-		txtpnErrores.setForeground(Color.LIGHT_GRAY);
-		txtpnErrores.setBackground(Color.DARK_GRAY);
-		txtpnErrores.setBorder(new LineBorder(new Color(192, 192, 192), 2));
-		txtpnErrores.setEditable(false);
-		txtpnErrores.setText("Errores");
 
-		PrintStream printStream = new PrintStream(new CustomOutputStream(txtpnErrores));
-		
 		// keeps reference of standard output stream
         standardOut = System.out;
 		
 		System.setOut(printStream);
-		
 		System.setErr(printStream);
 
 		frmRobotichandIde.getContentPane().setLayout(groupLayout);
 		
+		// Top MenuBar
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBackground(Color.DARK_GRAY);
 		frmRobotichandIde.setJMenuBar(menuBar);
@@ -229,6 +233,14 @@ public class Window {
 		mntmNewMenuItem.setForeground(Color.LIGHT_GRAY);
 		mntmNewMenuItem.setBackground(Color.DARK_GRAY);
 		menuBar.add(mntmNewMenuItem);
+		
+		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Guardar");
+		mntmNewMenuItem_1.setIcon(new ImageIcon(Window.class.getResource("/com/robotichand/Ide/icons/save.png")));
+		mntmNewMenuItem_1.setHorizontalAlignment(SwingConstants.CENTER);
+		mntmNewMenuItem_1.setForeground(Color.LIGHT_GRAY);
+		mntmNewMenuItem_1.setBackground(Color.DARK_GRAY);
+		menuBar.add(mntmNewMenuItem_1);
+		mntmNewMenuItem_1.setAction(saveFile);
 		
 		connectButton = new JButton("Connect");
 		connectButton.setForeground(Color.WHITE);
@@ -245,26 +257,13 @@ public class Window {
 		portsList = new JComboBox();
 		portsList.setBackground(Color.DARK_GRAY);
 		menuBar.add(portsList);
-
-           
-		/**
-		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Guardar");
-		mntmNewMenuItem_1.setIcon(new ImageIcon(window.class.getResource("/icons/save.png")));
-		mntmNewMenuItem_1.setHorizontalAlignment(SwingConstants.CENTER);
-		mntmNewMenuItem_1.setForeground(Color.LIGHT_GRAY);
-		mntmNewMenuItem_1.setBackground(Color.DARK_GRAY);
-		menuBar.add(mntmNewMenuItem_1);*/
 		
-		// Open file 
-		file = new File("../Interprete/test/test.rbg");
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(null, "txt", "rbg");
-		fileChooser.setFileFilter(filter);
 		getPorts();
 	}
 	
 	// Button actions 
 	private class compileAction extends AbstractAction {
-		//Icon runIcon = new ImageIcon(Window.class.getResource("/icons/search.png"));
+		Icon runIcon = new ImageIcon(Window.class.getResource("/com/robotichand/Ide/icons/search.png"));
 		public compileAction() {
 			putValue(NAME, "Compilar");
 			putValue(SHORT_DESCRIPTION, "Compila el programa");
@@ -276,7 +275,7 @@ public class Window {
 		}
 	}
 	private class runAction extends AbstractAction {
-		//Icon runIcon = new ImageIcon(Window.class.getResource("/icons/run.png"));
+		Icon runIcon = new ImageIcon(Window.class.getResource("/com/robotichand/Ide/icons/run.png"));
 		public runAction() {
 			putValue(NAME, "Compilar y ejecutar");
 			putValue(SHORT_DESCRIPTION, "Compila y ejecuta el programa");
@@ -297,7 +296,7 @@ public class Window {
 	
 	// Open file action
 	private class openFile extends AbstractAction {
-		//Icon openIcon = new ImageIcon(Window.class.getResource("/icons/open.png"));
+		Icon openIcon = new ImageIcon(Window.class.getResource("/com/robotichand/Ide/icons/open.png"));
 		public openFile() {
 			putValue(NAME, "Abrir archivo");
 			putValue(SHORT_DESCRIPTION, "Abre un archivo");
@@ -319,22 +318,20 @@ public class Window {
 	
 	// Save file action
 	private class saveFile extends AbstractAction {
-		Icon saveIcon = new ImageIcon(Window.class.getResource("/icons/save.png"));
+		Icon saveIcon = new ImageIcon(Window.class.getResource("/com/robotichand/Ide/icons/save.png"));
 		public saveFile() {
 			putValue(NAME, "Guardar");
 			putValue(SHORT_DESCRIPTION, "Guardar un archivo");
 			putValue( Action.SMALL_ICON, saveIcon);
 		}
 		public void actionPerformed(ActionEvent e) {
-			int value = fileChooser.showSaveDialog(frmRobotichandIde);
-            if (value == JFileChooser.APPROVE_OPTION) {
-                File file = fileChooser.getSelectedFile();
-                try {
-                    FileUtils.writeStringToFile(file, textArea.getText(), Charset.forName("UTF-8"));
-                    output.setText("");
-                } catch (Exception e1) {
-                }
-            }
+			file.getAbsolutePath();
+			try {
+				FileUtils.writeStringToFile(file, textArea.getText(), Charset.forName("UTF-8"));
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 
